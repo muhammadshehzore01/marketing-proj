@@ -9,6 +9,7 @@ import ServicesSection from "@/components/ServicesSection";
 import ProductsSection from "@/components/Products";
 import MaterialConstruction from "@/components/MaterialConstruction";
 import ApplicationLinks from "@/components/ApplicationLinks";
+import IndustriesLinks from "@/components/IndustriesLinks";
 
 // Lazy loaded below-the-fold only
 const AboutMSEW = dynamic(() => import("@/components/AboutMSEW"));
@@ -216,7 +217,7 @@ export default function Home() {
       </Section>
 
       <Section>
-        <Industries />
+        <IndustriesLinks />
       </Section>
 
       <Section>

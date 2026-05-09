@@ -12,8 +12,8 @@ export const industries = [
       "Reduce steam heat loss, improve worker safety, and support faster shutdown maintenance with custom engineered thermal insulation covers.",
     description:
       "Power plants operate with continuous high-temperature systems where heat loss from steam valves, turbines, generator exhaust areas, flanges, and piping can increase operating cost.",
-    image: "/images/industries/power-plants-industry-insulation.webp",
-    detailImage: "/images/industries/power-plants-industry-insulation-covers.webp",
+    image: "/img/industries/power-plants-industry-insulation.webp",
+    detailImage: "/img/industries/power-plants-industry-insulation-covers.webp",
     overview:
       "Power generation facilities depend on steam, exhaust, and high-temperature utility systems that must operate efficiently for long periods. Exposed hot surfaces around turbines, generators, steam valves, flanges, and exhaust lines can create continuous heat loss, unsafe maintenance zones, and unnecessary energy waste.",
     industryNeed:
@@ -126,8 +126,8 @@ export const industries = [
       "Inspection-friendly insulation covers for refineries, process plants, valves, flanges, pumps, and high-temperature oil and gas equipment.",
     description:
       "Oil and gas facilities require durable insulation systems that reduce heat loss while supporting frequent inspection and maintenance access.",
-    image: "/images/industries/oil-gas-industry-insulation.webp",
-    detailImage: "/images/industries/oil-gas-industry-insulation-covers.webp",
+    image: "/img/industries/oil-gas-industry-insulation.webp",
+    detailImage: "/img/industries/oil-gas-industry-insulation-covers.webp",
     overview:
       "Oil and gas plants operate with process lines, valves, pumps, flanges, heat exchangers, separators, and refinery equipment that must maintain temperature stability. Exposed hot surfaces increase heat loss, create burn hazards, and raise operating cost.",
     industryNeed:
@@ -241,8 +241,8 @@ export const industries = [
       "Custom-engineered insulation systems for petrochemical plants requiring heat retention, inspection efficiency, worker safety, and process stability.",
     description:
       "Petrochemical facilities require thermal insulation systems that maintain process temperatures, reduce energy waste, and allow frequent inspection access across complex equipment.",
-    image: "/images/industries/petrochemical-industry-insulation.webp",
-    detailImage: "/images/industries/petrochemical-industry-insulation-covers.webp",
+    image: "/img/industries/petrochemical-industry-insulation.webp",
+    detailImage: "/img/industries/petrochemical-industry-insulation-covers.webp",
     overview:
       "Petrochemical plants operate with reactors, transfer lines, valves, flanges, pumps, separators, expansion joints, and process systems where stable temperatures are critical for efficiency and safety. Poor insulation can create heat loss, process inconsistency, and maintenance delays.",
     industryNeed:
@@ -357,8 +357,8 @@ export const industries = [
       "Industrial thermal insulation systems for fertilizer plants focused on steam efficiency, maintenance speed, process stability, and worker safety.",
     description:
       "Fertilizer plants depend on steam, condensate, ammonia, urea, and process utility systems where thermal loss directly affects operating efficiency and energy cost.",
-    image: "/images/industries/fertilizer-industry-insulation.webp",
-    detailImage: "/images/industries/fertilizer-industry-insulation-covers.webp",
+    image: "/img/industries/fertilizer-industry-insulation.webp",
+    detailImage: "/img/industries/fertilizer-industry-insulation-covers.webp",
     overview:
       "Fertilizer production facilities operate with steam systems, condensate systems, ammonia processing, urea systems, utility lines, and process equipment where temperature retention is essential. Heat loss at valves, flanges, pumps, and headers can increase fuel usage and reduce utility performance.",
     industryNeed:
@@ -472,8 +472,8 @@ export const industries = [
       "Durable thermal protection for dusty, abrasive, high-temperature cement plant environments.",
     description:
       "Cement plants need rugged insulation systems for hot ducts, exhaust equipment, valves, flanges, fans, inspection points, and utility systems.",
-    image: "/images/industries/cement-industry-insulation.webp",
-    detailImage: "/images/industries/cement-industry-insulation-covers.webp",
+    image: "/img/industries/cement-industry-insulation.webp",
+    detailImage: "/img/industries/cement-industry-insulation-covers.webp",
     overview:
       "Cement manufacturing environments are dusty, abrasive, and heat-intensive. Hot air ducts, fans, exhaust lines, valves, flanges, and kiln-related equipment release radiant heat and often require inspection access in harsh operating areas.",
     industryNeed:
@@ -585,8 +585,8 @@ export const industries = [
       "High-temperature insulation and heat shield systems for steel mills, hot piping, exhaust areas, furnace zones, and maintenance-access equipment.",
     description:
       "Steel plants require thermal protection systems that can handle radiant heat, heavy-duty working conditions, and repeated maintenance access.",
-    image: "/images/industries/steel-industry-insulation.webp",
-    detailImage: "/images/industries/steel-industry-insulation-covers.webp",
+    image: "/img/industries/steel-industry-insulation.webp",
+    detailImage: "/img/industries/steel-industry-insulation-covers.webp",
     overview:
       "Steel plants operate with extreme heat zones, hot piping, exhaust systems, furnace areas, expansion joints, valves, and flanges. Radiant heat can affect operators, increase ambient temperature, and create safety concerns near production equipment.",
     industryNeed:
@@ -698,8 +698,8 @@ export const industries = [
       "Cost-effective insulation covers for textile mills focused on boiler fuel saving, steam heat retention, and safer production areas.",
     description:
       "Textile mills use steam for dyeing, drying, processing, and utilities, making heat loss reduction important for operating cost control.",
-    image: "/images/industries/textile-industry-insulation.webp",
-    detailImage: "/images/industries/textile-industry-insulation-covers.webp",
+    image: "/img/industries/textile-industry-insulation.webp",
+    detailImage: "/img/industries/textile-industry-insulation-covers.webp",
     overview:
       "Textile mills rely heavily on steam distribution from boiler rooms to dyeing, drying, washing, finishing, and production support areas. Exposed steam valves, flanges, condensate lines, and hot piping increase fuel consumption and make working areas unsafe.",
     industryNeed:
@@ -812,8 +812,8 @@ export const industries = [
       "Neat, removable insulation covers for steam, hot water, and utility equipment in food processing environments.",
     description:
       "Food processing plants need insulation systems that improve energy efficiency, support cleaning access, and reduce hot surface risks in utility areas.",
-    image: "/images/industries/food-processing-industry-insulation.webp",
-    detailImage: "/images/industries/food-processing-industry-insulation-covers.webp",
+    image: "/img/industries/food-processing-industry-insulation.webp",
+    detailImage: "/img/industries/food-processing-industry-insulation-covers.webp",
     overview:
       "Food processing facilities use steam and hot water for cleaning, process support, production utilities, and boiler room operations. Exposed hot surfaces around valves, pumps, and flanges increase heat loss and create safety risks for operators and maintenance workers.",
     industryNeed:
@@ -927,8 +927,8 @@ export const industries = [
       "Professional removable insulation systems for pharmaceutical utility equipment, steam systems, and maintenance-access hot surfaces.",
     description:
       "Pharmaceutical plants need clean, professional insulation solutions that support safety, energy efficiency, and planned maintenance access.",
-    image: "/images/industries/pharmaceuticals-industry-insulation.webp",
-    detailImage: "/images/industries/pharmaceuticals-industry-insulation-covers.webp",
+    image: "/img/industries/pharmaceuticals-industry-insulation.webp",
+    detailImage: "/img/industries/pharmaceuticals-industry-insulation-covers.webp",
     overview:
       "Pharmaceutical facilities use steam utilities, boiler systems, purified water support lines, valves, flanges, pumps, and hot utility equipment that must be safe, efficient, and professionally presented. Poor insulation can increase heat loss, reduce working comfort, and look unsuitable for clean plant standards.",
     industryNeed:
@@ -1042,8 +1042,8 @@ export const industries = [
       "Compact high-temperature insulation jackets for marine engines, exhaust systems, turbocharger areas, and engine room equipment.",
     description:
       "Marine engine rooms need compact thermal protection systems that reduce heat exposure, improve crew safety, and allow quick maintenance access.",
-    image: "/images/industries/marine-shipping-industry-insulation.webp",
-    detailImage: "/images/industries/marine-shipping-industry-insulation-covers.webp",
+    image: "/img/industries/marine-shipping-industry-insulation.webp",
+    detailImage: "/img/industries/marine-shipping-industry-insulation-covers.webp",
     overview:
       "Marine engine rooms contain many hot surfaces in limited spaces, including engine exhaust lines, turbocharger areas, valves, flanges, pumps, and auxiliary equipment. High radiant heat can make maintenance unsafe and uncomfortable for crew members.",
     industryNeed:
@@ -1156,8 +1156,8 @@ export const industries = [
       "Segmented thermal insulation covers for extruder barrels, heater bands, die heads, and plastic processing hot zones.",
     description:
       "Plastic processing machines lose heat from heater bands, extruder barrels, die heads, and hot zones during continuous operation.",
-    image: "/images/industries/plastic-industry-insulation.webp",
-    detailImage: "/images/industries/plastic-industry-insulation-covers.webp",
+    image: "/img/industries/plastic-industry-insulation.webp",
+    detailImage: "/img/industries/plastic-industry-insulation-covers.webp",
     overview:
       "Plastic extrusion and molding equipment uses electric heater bands, barrel zones, die heads, and hot processing areas that must maintain stable temperature. Exposed hot zones waste electricity and create burn hazards for machine operators.",
     industryNeed:
@@ -1271,8 +1271,8 @@ export const industries = [
       "Reusable insulation covers for steam headers, boiler accessories, hot water networks, condensate systems, valves, flanges, and pumps.",
     description:
       "Industrial utility rooms and service networks lose energy every day through exposed steam, hot water, condensate, valves, flanges, pumps, and boiler accessories.",
-    image: "/images/industries/utilities-industry-insulation.webp",
-    detailImage: "/images/industries/utilities-industry-insulation-covers.webp",
+    image: "/img/industries/utilities-industry-insulation.webp",
+    detailImage: "/img/industries/utilities-industry-insulation-covers.webp",
     overview:
       "Industrial utility systems distribute steam, hot water, condensate, and process heat across the plant. Exposed valves, flanges, pumps, boiler accessories, and steam headers can waste energy continuously and create unsafe working conditions.",
     industryNeed:

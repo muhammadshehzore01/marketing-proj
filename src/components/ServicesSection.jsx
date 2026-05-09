@@ -226,6 +226,7 @@
 
 
 
+// /home/shahrukh-eng/marketing-proj/src/components/ServicesSection.jsx
 
 "use client";
 
@@ -234,6 +235,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useGeo } from "@/context/GeoContext";
 import { getImageUrl } from "@/lib/api";
+import { getServiceGeoContent } from "@/lib/seo/engine/shared/serviceGeoEngine";
 
 /* =====================================================
    STRIP HTML
@@ -242,20 +244,6 @@ function stripHtml(html) {
   if (!html) return "";
   return html.replace(/<[^>]+>/g, "");
 }
-
-/* =====================================================
-   GEO CONTENT ENGINE
-===================================================== */
-function getGeoServicesContent(city, country) {
-  const place = city?.display || country?.name || "your region";
-
-  return {
-    title: `Industrial Insulation Solutions in ${place}`,
-    description: `Custom-engineered insulation jackets in ${place} designed to reduce heat loss, improve safety, and optimize industrial energy efficiency.`,
-    cta: `View Industrial Solutions in ${place}`,
-  };
-}
-
 /* =====================================================
    SKELETON
 ===================================================== */
@@ -282,9 +270,10 @@ export default function ServicesSection() {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const geoContent = isGeo
-    ? getGeoServicesContent(city, country)
-    : null;
+  /* =====================================================
+     CLEAN GEO ENGINE (ONLY ONE SOURCE)
+  ===================================================== */
+  const geoContent = getServiceGeoContent(city, country);
 
   /* =====================================================
      FETCH SERVICES
@@ -340,7 +329,7 @@ export default function ServicesSection() {
     <section className="py-14">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-        {/* HEADER */}
+        {/* ================= HEADER ================= */}
         <div className="text-center">
           <h2 className="text-base md:text-2xl font-bold">
             {geoContent?.title || "Industrial Insulation Solutions"}
@@ -352,8 +341,9 @@ export default function ServicesSection() {
           </p>
         </div>
 
-        {/* SERVICES */}
+        {/* ================= SERVICES ================= */}
         <div className="mt-10 space-y-6 md:space-y-10 max-w-5xl mx-auto">
+
           {loading ? (
             <>
               <MiniSkeletonRow />
@@ -411,12 +401,19 @@ export default function ServicesSection() {
           )}
         </div>
 
-        {/* CTA */}
+        {/* ================= CTA ================= */}
         <div className="text-center mt-12">
           <Link href="/services" className="btn-primary">
             {geoContent?.cta || "View All Services"}
           </Link>
         </div>
+
+        {/* OPTIONAL EXTRA GEO TEXT (SEO BOOST) */}
+        {geoContent?.extraText && (
+          <p className="text-xs text-gray-500 mt-6 text-center max-w-3xl mx-auto">
+            {geoContent.extraText}
+          </p>
+        )}
 
       </div>
     </section>

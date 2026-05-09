@@ -115,7 +115,7 @@ export default function CountryPage({ params }) {
         </SeoCard>
       </SeoSection>
 
-      <ServicesSection />
+      <ServicesSection seoData={data.serviceGeo} />
 
       {/* ================= PRODUCTS ================= */}
       <ProductsSection />

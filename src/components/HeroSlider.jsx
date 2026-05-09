@@ -192,16 +192,16 @@
 //   );
 // }
 
-
+// marketing-proj/src/components/HeroSlider.jsx
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
+
 import { getImageUrl } from "@/lib/api";
 import { getHeroImage } from "@/lib/seo/imageResolver";
-import { getServiceGeoContent } from "@/lib/seo/engine/shared/serviceGeoEngine";
 
 const ChevronLeft = dynamic(
   () => import("lucide-react").then((mod) => mod.ChevronLeft),
@@ -232,6 +232,7 @@ export default function HeroSlider({ seoData = null }) {
 
   const isSEOPage = Boolean(seoData);
 
+  /* ================= LOAD HOMEPAGE SLIDES ================= */
   useEffect(() => {
     if (isSEOPage) return;
 
@@ -268,6 +269,7 @@ export default function HeroSlider({ seoData = null }) {
     };
   }, [isSEOPage]);
 
+  /* ================= AUTO SLIDE ================= */
   useEffect(() => {
     if (!slides.length || isSEOPage || paused) return;
 
@@ -284,53 +286,27 @@ export default function HeroSlider({ seoData = null }) {
   const fallbackTitle = "Industrial Insulation Solutions";
 
   /* =====================================================
-     🔥 GEO ENGINE INTEGRATION (FIXED)
+     🔥 FIX 1: REMOVE GEO OVERRIDE COMPLETELY
   ===================================================== */
-  const geoContent = useMemo(() => {
-    if (!isSEOPage) return null;
 
-    return getServiceGeoContent(
-      seoData?.city || null,
-      seoData?.country || null
-    );
-  }, [isSEOPage, seoData]);
-
-  /* =====================================================
-     IMAGE
-  ===================================================== */
-  const image = useMemo(() => {
-    if (isSEOPage) {
-      return getHeroImage({
-        slides,
-        country: seoData?.country?.name
-          ? seoData.country
-          : { name: seoData?.country?.slug },
-
-        city: seoData?.city?.display
-          ? seoData.city
-          : seoData?.city,
-      });
-    }
-
-    return activeSlide?.image || fallbackImage;
-  }, [isSEOPage, slides, seoData, activeSlide]);
-
-  /* =====================================================
-     TITLE (FIXED PRIORITY)
-  ===================================================== */
   const title = isSEOPage
-    ? geoContent?.title || seoData?.title
+    ? seoData?.title || fallbackTitle
     : activeSlide?.title || fallbackTitle;
 
-  /* =====================================================
-     SUBTITLE (FIXED GEO LOGIC)
-  ===================================================== */
   const subtitle = isSEOPage
-    ? geoContent?.description ||
-      seoData?.overview?.content?.[0] ||
-      seoData?.demand ||
-      ""
+    ? seoData?.overview?.content?.[0] || ""
     : activeSlide?.subtitle || "";
+
+  /* =====================================================
+     🔥 FIX 2: FIX IMAGE LOGIC
+  ===================================================== */
+  const image = isSEOPage
+    ? getHeroImage({
+        slides,
+        country: seoData?.country,
+        city: seoData?.city,
+      }) || fallbackImage
+    : activeSlide?.image || fallbackImage;
 
   return (
     <section className="relative overflow-hidden text-white">
@@ -346,13 +322,15 @@ export default function HeroSlider({ seoData = null }) {
           className="object-cover"
           priority
           sizes="100vw"
-          quality={65}
+          quality={70}
         />
 
         <div className="absolute inset-0 bg-black/40" />
 
         <div className="absolute inset-0 flex flex-col justify-center px-6 md:px-20">
-          <h1 className="text-3xl md:text-6xl font-bold">{title}</h1>
+          <h1 className="text-3xl md:text-6xl font-bold">
+            {title}
+          </h1>
 
           {subtitle && (
             <p className="mt-4 max-w-2xl text-white/80">
@@ -383,10 +361,7 @@ export default function HeroSlider({ seoData = null }) {
           <>
             <div className="absolute bottom-6 w-full flex justify-center gap-2">
               {slides.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setIndex(i)}
-                >
+                <button key={i} onClick={() => setIndex(i)}>
                   <Dot active={i === index} />
                 </button>
               ))}

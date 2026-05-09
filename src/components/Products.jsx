@@ -104,7 +104,7 @@ function ProductCard({ product, isGeo, country, city }) {
     </Link>
   );
 }
-
+      
 /* ================= MAIN ================= */
 
 export default function ProductsSection() {

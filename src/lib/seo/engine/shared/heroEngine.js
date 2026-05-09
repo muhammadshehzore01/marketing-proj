@@ -9,7 +9,7 @@ function pick(arr, seed, offset = 0) {
   return arr[(seed + offset) % arr.length];
 }
 
-/* ================= DATA ================= */
+/* ================= EXPANDED DATA ================= */
 
 const industries = [
   "manufacturing",
@@ -17,21 +17,28 @@ const industries = [
   "power generation",
   "food processing",
   "automotive production",
+  "oil and gas",
+  "cement production",
+  "fertilizer plants",
 ];
 
-const equipment = [
-  "valves",
-  "pumps",
-  "turbines",
-  "boilers",
-  "heat exchangers",
-];
+const equipmentMap = {
+  manufacturing: ["machines", "assembly lines", "press systems"],
+  "chemical processing": ["reactors", "pipelines", "storage tanks"],
+  "power generation": ["turbines", "boilers", "heat exchangers"],
+  "food processing": ["processing units", "sterilizers", "tanks"],
+  "automotive production": ["robots", "paint lines", "press machines"],
+  "oil and gas": ["valves", "refinery units", "pipelines"],
+  "cement production": ["kilns", "crusher systems", "preheaters"],
+  "fertilizer plants": ["reactors", "dryers", "storage systems"],
+};
 
 const benefits = [
   "reduce heat loss",
-  "improve safety",
-  "increase efficiency",
-  "lower costs",
+  "improve workplace safety",
+  "increase operational efficiency",
+  "lower energy costs",
+  "ensure thermal stability",
 ];
 
 /* ================= TITLE TEMPLATES ================= */
@@ -40,11 +47,26 @@ const countryTitleTemplates = [
   (c) => `Removable Insulation Jackets in ${c}`,
   (c) => `Industrial Thermal Solutions for ${c}`,
   (c) => `Energy Saving Systems in ${c}`,
+  (c) => `Custom Insulation Engineering in ${c}`,
 ];
 
 const cityTitleTemplates = [
   (city, country) => `Insulation Jackets in ${city}, ${country}`,
-  (city, country) => `Industrial Solutions in ${city}`,
+  (city) => `Industrial Insulation Solutions in ${city}`,
+  (city, country) => `Thermal Protection Systems - ${city}`,
+];
+
+/* ================= SUBTITLE VARIANTS ================= */
+
+const subtitleTemplates = [
+  (country, ind, eq, ben) =>
+    `${country} relies heavily on ${ind} infrastructure where ${eq} require advanced thermal protection to ${ben}.`,
+
+  (country, ind, eq, ben) =>
+    `In ${country}, industries like ${ind} depend on insulation systems for ${eq} to ${ben}.`,
+
+  (country, ind, eq, ben) =>
+    `Industrial facilities in ${country} use insulation jackets for ${eq} to ${ben} in harsh operating environments.`,
 ];
 
 /* ================= COUNTRY HERO ================= */
@@ -56,14 +78,16 @@ export function generateCountryHero(country) {
 
   const title = pick(countryTitleTemplates, seed)(country.name);
 
-  const ind = pick(industries, seed, 1);
-  const eq1 = pick(equipment, seed, 2);
-  const ben = pick(benefits, seed, 3);
+  const industry = pick(industries, seed);
+  const eq = pick(
+    equipmentMap[industry] || ["industrial equipment"],
+    seed
+  );
+  const ben = pick(benefits, seed);
 
-  const subtitle = `
-    ${country.name} industrial sector relies on ${ind} systems.
-    Our insulation jackets for ${eq1} help ${ben}.
-  `;
+  const subtitleFn = pick(subtitleTemplates, seed);
+
+  const subtitle = subtitleFn(country.name, industry, eq, ben);
 
   return {
     title: clean(title),
@@ -90,14 +114,14 @@ export function generateCityHero(city, country) {
     country.name
   );
 
-  const ind = pick(industries, seed, 1);
-  const eq1 = pick(equipment, seed, 2);
-  const ben = pick(benefits, seed, 3);
+  const industry = pick(industries, seed);
+  const eq = pick(
+    equipmentMap[industry] || ["industrial equipment"],
+    seed
+  );
+  const ben = pick(benefits, seed);
 
-  const subtitle = `
-    ${city.display} in ${country.name} uses industrial ${ind}.
-    Insulation for ${eq1} helps ${ben}.
-  `;
+  const subtitle = `${city.display} in ${country.name} industrial sector includes ${industry} facilities where ${eq} require insulation to ${ben}.`;
 
   return {
     title: clean(title),

@@ -1,4 +1,4 @@
-
+// /home/shahrukh-eng/marketing-proj/src/lib/seo/engine/shared/serviceGeoEngine.js
 export function getServiceGeoContent(city, country) {
   const place = city?.display || country?.name || "your region";
 
