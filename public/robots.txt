@@ -1,0 +1,23 @@
+User-agent: *
+Allow: /
+
+# Allow all important pages
+Allow: /blogs/
+Allow: /products/
+Allow: /services/
+Allow: /learn-more/
+
+# Remove WordPress-related blocks (not needed for Next.js)
+# Disallow: /hello-world/
+# Disallow: /sample-page/
+# Disallow: /category/
+# Disallow: /uncategorized/
+# Disallow: /wp-content/
+# Disallow: /wp-admin/
+
+# Keep gallery blocked (if you still don’t want that page indexed)
+Disallow: /gallery/
+
+# Sitemap location
+Sitemap: https://mshahrukhengineeringworks.com/sitemap.xml
+
