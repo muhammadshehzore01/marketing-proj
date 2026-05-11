@@ -13,7 +13,13 @@ export default function IndustriesPage() {
     <main>
       <section className="section bg-primary">
         <div className="container">
-          <p className="mb-4" style={{ color: "var(--accent)", fontWeight: 800 }}>
+          <p
+            className="mb-4"
+            style={{
+              color: "var(--accent)",
+              fontWeight: 800,
+            }}
+          >
             Industries We Serve
           </p>
 
@@ -29,27 +35,54 @@ export default function IndustriesPage() {
 
       <section className="section bg-secondary">
         <div className="container grid md:grid-cols-3 gap-8">
-          {industries.map((industry) => (
+          {industries.map((industry, index) => (
             <Link
               key={industry.slug}
               href={`/industries/${industry.slug}`}
-              className="glass-card overflow-hidden no-underline"
+              className="overflow-hidden no-underline block"
+              style={{
+                background: "var(--surface)",
+                border: "1px solid var(--border)",
+                borderRadius: "var(--radius-md)",
+              }}
             >
-              <div className="relative h-56">
+              <div className="relative h-48 overflow-hidden">
                 <Image
                   src={industry.image}
                   alt={industry.title}
                   fill
+                  loading={index < 3 ? "eager" : "lazy"}
+                  priority={index === 0}
+                  sizes="(max-width: 768px) 100vw, 33vw"
                   className="object-cover"
                 />
               </div>
 
-              <div className="p-6">
-                <h3>{industry.title}</h3>
+              <div className="p-5">
+                <h3
+                  style={{
+                    fontSize: "clamp(1.05rem, 1.4vw, 1.35rem)",
+                    marginBottom: "0.85rem",
+                  }}
+                >
+                  {industry.title}
+                </h3>
 
-                <p className="mb-4">{industry.description}</p>
+                <p
+                  className="mb-4"
+                  style={{
+                    fontSize: "0.95rem",
+                  }}
+                >
+                  {industry.description}
+                </p>
 
-                <span style={{ color: "var(--accent)", fontWeight: 800 }}>
+                <span
+                  style={{
+                    color: "var(--accent)",
+                    fontWeight: 800,
+                  }}
+                >
                   View Industry Solution →
                 </span>
               </div>

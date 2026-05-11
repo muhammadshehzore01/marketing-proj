@@ -6,24 +6,22 @@ import HeroSlider from "@/components/HeroSlider";
 import IntroSection from "@/components/IntroSection";
 import KeyBenefitsStrip from "@/components/KeyBenefitsStrip";
 import ServicesSection from "@/components/ServicesSection";
-import ProductsSection from "@/components/Products";
-import MaterialConstruction from "@/components/MaterialConstruction";
-import ApplicationLinks from "@/components/ApplicationLinks";
-import IndustriesLinks from "@/components/IndustriesLinks";
 
-// Lazy loaded below-the-fold only
+// Below-the-fold lazy loaded
+const ProductsSection = dynamic(() => import("@/components/Products"));
+const ApplicationLinks = dynamic(() => import("@/components/ApplicationLinks"));
+const IndustriesLinks = dynamic(() => import("@/components/IndustriesLinks"));
+const MaterialConstruction = dynamic(() =>
+  import("@/components/MaterialConstruction")
+);
 const AboutMSEW = dynamic(() => import("@/components/AboutMSEW"));
-const HomePageContact = dynamic(() => import("@/components/HomePageContact"));
-const PartnersSection = dynamic(() => import("@/components/PartnersSection"));
-const Industries = dynamic(() => import("@/components/Industries"));
 const PakistanIndustrialCityPages = dynamic(() =>
   import("@/components/industrialCityPages")
 );
+const HomePageContact = dynamic(() => import("@/components/HomePageContact"));
+const PartnersSection = dynamic(() => import("@/components/PartnersSection"));
 const FAQSection = dynamic(() => import("@/components/faqsection"));
 
-// =============================
-// SEO METADATA
-// =============================
 export const metadata = {
   title:
     "Removable Insulation Jackets Pakistan | Valve, Exhaust & Turbine Covers",
@@ -168,20 +166,17 @@ const schema = {
 export default function Home() {
   return (
     <main className="overflow-x-hidden">
-      {/* Full SEO Schema */}
       <script
         id="home-schema"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
 
-      {/* SEO H1 */}
       <h1 className="sr-only">
         Industrial Removable Insulation Jackets for Valves, Pumps, Turbines &
         Exhaust Systems in Pakistan
       </h1>
 
-      {/* HERO */}
       <section className="hp-hero">
         <HeroSlider />
       </section>
@@ -197,15 +192,19 @@ export default function Home() {
       </Section>
 
       <Section>
-        <MaterialConstruction />
-      </Section>
-
-      <Section>
         <ProductsSection />
       </Section>
 
       <Section>
-      <ApplicationLinks/>
+        <MaterialConstruction />
+      </Section>
+
+      <Section>
+        <ApplicationLinks />
+      </Section>
+
+      <Section>
+        <IndustriesLinks />
       </Section>
 
       <Section>
@@ -214,10 +213,6 @@ export default function Home() {
 
       <Section>
         <PakistanIndustrialCityPages />
-      </Section>
-
-      <Section>
-        <IndustriesLinks />
       </Section>
 
       <Section>

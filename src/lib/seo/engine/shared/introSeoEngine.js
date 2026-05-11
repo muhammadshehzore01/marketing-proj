@@ -7,7 +7,7 @@ function clean(text) {
 }
 
 function pick(arr, seed, offset = 0) {
-  return arr[(seed + offset) % arr.length];
+  return arr[Math.abs(seed + offset) % arr.length];
 }
 
 /* =====================================================
@@ -31,18 +31,24 @@ const headings = [
   "Reusable Insulation Jackets for Industrial Equipment",
 ];
 
-const industries = [
-  "power plants",
-  "chemical processing facilities",
-  "oil and gas systems",
-  "manufacturing plants",
-  "food processing industries",
-  "pharmaceutical industries",
-  "marine engineering facilities",
-  "heavy industrial operations",
+const industryPool = [
+  "advanced manufacturing",
+  "chemical processing",
+  "oil and gas operations",
+  "power generation",
+  "food processing",
+  "pharmaceutical production",
+  "marine engineering",
+  "heavy industrial systems",
+  "automation engineering",
+  "energy infrastructure",
+  "precision machinery",
+  "industrial robotics",
+  "thermal processing",
+  "refinery operations",
 ];
 
-const equipment = [
+const equipmentPool = [
   "valves",
   "pumps",
   "turbines",
@@ -53,6 +59,8 @@ const equipment = [
   "exhaust systems",
   "pipelines",
   "industrial machinery",
+  "storage tanks",
+  "reactors",
 ];
 
 const benefitsPool = [
@@ -68,15 +76,43 @@ const benefitsPool = [
   "Support sustainability goals",
 ];
 
+const paragraph1Templates = [
+  (location, industry) =>
+    `Industrial facilities in ${location} rely on removable insulation jackets to improve thermal performance across ${industry}.`,
+
+  (location, industry) =>
+    `${location} industries use advanced removable insulation systems to reduce energy loss in ${industry}.`,
+
+  (location, industry) =>
+    `Designed for demanding environments in ${location}, our insulation jackets improve efficiency in ${industry}.`,
+
+  (location, industry) =>
+    `Thermal insulation solutions in ${location} help industrial operators optimize ${industry} performance.`,
+];
+
+const paragraph2Templates = [
+  (eq1, eq2, eq3) =>
+    `Custom removable insulation protects ${eq1}, ${eq2}, and ${eq3}, reducing maintenance costs and improving safety.`,
+
+  (eq1, eq2, eq3) =>
+    `These reusable systems help insulate ${eq1}, ${eq2}, and ${eq3} while improving equipment reliability.`,
+
+  (eq1, eq2, eq3) =>
+    `Engineered for durability, insulation jackets support ${eq1}, ${eq2}, and ${eq3} in high-temperature environments.`,
+
+  (eq1, eq2, eq3) =>
+    `Our insulation covers reduce heat loss on ${eq1}, ${eq2}, and ${eq3}, supporting long-term efficiency.`,
+];
+
 const applicationsTemplates = [
-  (eq1, eq2, eq3) =>
-    `Ideal for ${eq1}, ${eq2}, ${eq3}, and other high-temperature industrial equipment.`,
+  (a, b, c) =>
+    `Ideal for ${a}, ${b}, ${c}, and other high-temperature industrial equipment.`,
 
-  (eq1, eq2, eq3) =>
-    `Designed for insulation of ${eq1}, ${eq2}, and ${eq3} across industrial environments.`,
+  (a, b, c) =>
+    `Designed for insulation of ${a}, ${b}, and ${c} across demanding industrial environments.`,
 
-  (eq1, eq2, eq3) =>
-    `Commonly used on ${eq1}, ${eq2}, and ${eq3} where thermal efficiency is critical.`,
+  (a, b, c) =>
+    `Commonly installed on ${a}, ${b}, and ${c} where thermal efficiency is critical.`,
 ];
 
 /* =====================================================
@@ -86,39 +122,43 @@ const applicationsTemplates = [
 export function generateCountryIntro(country) {
   if (!country) return null;
 
-  const { seed } = getSeoSeed(country.slug, "intro-country");
+  const { seed } = getSeoSeed(
+    `${country.slug}-${country.name}-intro-v4`,
+    "intro-country"
+  );
 
   const label = pick(labels, seed);
-  const heading = pick(headings, seed);
+  const heading = pick(headings, seed, 1);
 
-  const ind = pick(industries, seed, 1);
+  const industry = pick(industryPool, seed, 2);
 
-  const eq1 = pick(equipment, seed, 2);
-  const eq2 = pick(equipment, seed, 3);
-  const eq3 = pick(equipment, seed, 4);
+  const eq1 = pick(equipmentPool, seed, 3);
+  const eq2 = pick(equipmentPool, seed, 4);
+  const eq3 = pick(equipmentPool, seed, 5);
 
   const benefits = [
-    pick(benefitsPool, seed, 5),
     pick(benefitsPool, seed, 6),
     pick(benefitsPool, seed, 7),
     pick(benefitsPool, seed, 8),
+    pick(benefitsPool, seed, 9),
   ];
 
-  const paragraph1 = `
-    Our removable insulation jackets support industrial operations in ${country.name}
-    by reducing thermal energy loss, improving equipment efficiency,
-    and enhancing worker safety.
-  `;
+  const paragraph1 = pick(
+    paragraph1Templates,
+    seed,
+    10
+  )(country.name, industry);
 
-  const paragraph2 = `
-    Designed for ${ind}, these reusable insulation systems simplify
-    maintenance access while lowering long-term operating costs.
-  `;
+  const paragraph2 = pick(
+    paragraph2Templates,
+    seed,
+    11
+  )(eq1, eq2, eq3);
 
   const applications = pick(
     applicationsTemplates,
     seed,
-    9
+    12
   )(eq1, eq2, eq3);
 
   return {
@@ -139,39 +179,43 @@ export function generateCountryIntro(country) {
 export function generateCityIntro(city, country) {
   if (!city || !country) return null;
 
-  const { seed } = getSeoSeed(city.name, "intro-city");
+  const { seed } = getSeoSeed(
+    `${city.name}-${country.slug}-${city.display}-intro-v4`,
+    "intro-city"
+  );
 
   const label = pick(labels, seed);
-  const heading = pick(headings, seed);
+  const heading = pick(headings, seed, 1);
 
-  const ind = pick(industries, seed, 1);
+  const industry = pick(industryPool, seed, 2);
 
-  const eq1 = pick(equipment, seed, 2);
-  const eq2 = pick(equipment, seed, 3);
-  const eq3 = pick(equipment, seed, 4);
+  const eq1 = pick(equipmentPool, seed, 3);
+  const eq2 = pick(equipmentPool, seed, 4);
+  const eq3 = pick(equipmentPool, seed, 5);
 
   const benefits = [
-    pick(benefitsPool, seed, 5),
     pick(benefitsPool, seed, 6),
     pick(benefitsPool, seed, 7),
     pick(benefitsPool, seed, 8),
+    pick(benefitsPool, seed, 9),
   ];
 
-  const paragraph1 = `
-    Industrial facilities in ${city.display}, ${country.name}
-    rely on removable insulation jackets to improve thermal
-    performance and reduce heat loss.
-  `;
+  const paragraph1 = pick(
+    paragraph1Templates,
+    seed,
+    10
+  )(`${city.display}, ${country.name}`, industry);
 
-  const paragraph2 = `
-    These reusable insulation systems support ${ind}
-    by lowering operating costs and improving maintenance efficiency.
-  `;
+  const paragraph2 = pick(
+    paragraph2Templates,
+    seed,
+    11
+  )(eq1, eq2, eq3);
 
   const applications = pick(
     applicationsTemplates,
     seed,
-    9
+    12
   )(eq1, eq2, eq3);
 
   return {

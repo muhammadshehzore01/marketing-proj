@@ -48,38 +48,38 @@ export default function IndustriesLinks() {
         <div className="mt-14">
           <Swiper
             modules={[Autoplay]}
-            spaceBetween={24}
-            loop={true}
-            speed={2000}
+            spaceBetween={20}
+            loop={false}
+            speed={700}
             autoplay={{
-              delay: 0,
-              disableOnInteraction: false,
+              delay: 3500,
+              disableOnInteraction: true,
+              pauseOnMouseEnter: true,
             }}
             allowTouchMove={true}
-            slidesPerView={1.2}
+            watchSlidesProgress={false}
+            slidesPerView={1.15}
             breakpoints={{
-              640: {
-                slidesPerView: 2,
-              },
-              1024: {
-                slidesPerView: 4,
-              },
+              640: { slidesPerView: 2 },
+              1024: { slidesPerView: 4 },
             }}
             className="industries-swiper"
           >
-            {industries.map((industry) => (
+            {industries.map((industry, index) => (
               <SwiperSlide key={industry.slug}>
                 <Link
                   href={`/industries/${industry.slug}`}
                   className="glass-card overflow-hidden no-underline group h-full block"
                 >
-                  <div className="relative h-64 overflow-hidden">
+                  <div className="relative h-56 overflow-hidden">
                     <Image
                       src={industry.image}
                       alt={industry.heroTitle}
                       fill
-                      sizes="(max-width: 768px) 100vw, 25vw"
-                      className="object-cover transition duration-700 group-hover:scale-110"
+                      loading={index < 4 ? "eager" : "lazy"}
+                      priority={index < 2}
+                      sizes="(max-width: 640px) 85vw, (max-width: 1024px) 50vw, 25vw"
+                      className="object-cover transition duration-500 group-hover:scale-105"
                     />
                   </div>
 
@@ -116,26 +116,7 @@ export default function IndustriesLinks() {
               </SwiperSlide>
             ))}
           </Swiper>
-        </div>
-
-        <div className="mt-14 glass-card p-8 md:p-12 text-center">
-          <h3>Need Custom Industrial Insulation Covers?</h3>
-
-          <p className="max-w-3xl mx-auto mt-4 mb-8">
-            Share your equipment dimensions, operating temperature, and
-            application details. We will recommend suitable removable thermal
-            insulation systems according to your industrial requirements.
-          </p>
-
-          <div className="flex flex-wrap justify-center gap-4">
-            <a href="https://wa.me/923052646312" className="btn-primary">
-              WhatsApp Inquiry
-            </a>
-
-            <Link href="/industries" className="btn-secondary">
-              Browse All Industries
-            </Link>
-          </div>
+        
         </div>
       </div>
     </section>
