@@ -1,63 +1,45 @@
 // marketing-proj/src/lib/seo/engine/shared/seedEngine.js
-// marketing-proj/src/lib/seo/engine/shared/seedEngine.js
+// /src/lib/seo/engine/shared/seedEngine.js
 
-/* =====================================================
-🔥 SEO SEED ENGINE (CLEAN + NO CIRCULAR DEPENDENCY)
-===================================================== */
+function hashString(str) {
+  let hash = 0;
 
-/**
- * Build deterministic numeric seed from slug + type
- */
-export function buildUniquenessSeed(slug, type = "default") {
-  if (!slug) return 0;
-
-  const base = `${slug}-${type}`;
-
-  let seed = 0;
-
-  for (let i = 0; i < base.length; i++) {
-    seed = (seed * 31 + base.charCodeAt(i)) % 100000;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash |= 0;
   }
 
-  return Math.abs(seed);
+  return Math.abs(hash);
 }
 
-/**
- * Keyword pool (SEO variation system)
- */
-const keywordPool = [
-  "advanced",
-  "industrial",
-  "thermal",
-  "energy-efficient",
-  "high-performance",
-  "next-gen",
-  "automated",
-  "precision",
-  "smart",
-  "optimized",
-];
+export function getSeoSeed(input = "", type = "global") {
+  const timeFactor = 1
+  const typeFactor =
+    type === "city" ? 17 :
+    type === "country" ? 31 :
+    type === "hero" ? 47 : 11;
 
-/**
- * Rotate keyword based on seed
- */
-export function getRotatedKeyword(seed = 0) {
-  if (!Array.isArray(keywordPool) || keywordPool.length === 0) {
-    return "industrial";
-  }
+  const base = `${input}-${type}-${timeFactor}`;
 
-  return keywordPool[seed % keywordPool.length];
-}
-
-/**
- * Main SEO seed generator (SAFE OUTPUT)
- */
-export function getSeoSeed(slug, type = "default") {
-  const seed = buildUniquenessSeed(slug, type);
-  const keyword = getRotatedKeyword(seed);
+  const hash = hashString(base);
 
   return {
-    seed,
-    keyword,
+    seed: (hash * typeFactor) % 100000,
+    keyword: generateKeyword(hash),
   };
+}
+
+/* ================= KEYWORD VARIATION ================= */
+
+const keywordPool = [
+  "thermal insulation",
+  "removable insulation jackets",
+  "industrial heat protection",
+  "energy efficiency systems",
+  "high temperature insulation",
+  "valve insulation solutions",
+];
+
+function generateKeyword(hash) {
+  return keywordPool[hash % keywordPool.length];
 }

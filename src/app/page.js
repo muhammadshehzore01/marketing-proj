@@ -6,6 +6,7 @@ import HeroSlider from "@/components/HeroSlider";
 import IntroSection from "@/components/IntroSection";
 import KeyBenefitsStrip from "@/components/KeyBenefitsStrip";
 import ServicesSection from "@/components/ServicesSection";
+import ExportCountries from "@/components/ExportCountries";
 
 // Below-the-fold lazy loaded
 const ProductsSection = dynamic(() => import("@/components/Products"));
@@ -192,14 +193,6 @@ export default function Home() {
       </Section>
 
       <Section>
-        <ProductsSection />
-      </Section>
-
-      <Section>
-        <MaterialConstruction />
-      </Section>
-
-      <Section>
         <ApplicationLinks />
       </Section>
 
@@ -208,15 +201,17 @@ export default function Home() {
       </Section>
 
       <Section>
+        <ProductsSection />
+      </Section>
+
+      <Section>
+        <MaterialConstruction />
+      </Section>
+
+      <ExportCountries/>
+
+      <Section>
         <AboutMSEW />
-      </Section>
-
-      <Section>
-        <PakistanIndustrialCityPages />
-      </Section>
-
-      <Section>
-        <HomePageContact />
       </Section>
 
       <Section>
@@ -225,6 +220,10 @@ export default function Home() {
 
       <Section>
         <FAQSection />
+      </Section>
+
+      <Section>
+        <HomePageContact />
       </Section>
     </main>
   );

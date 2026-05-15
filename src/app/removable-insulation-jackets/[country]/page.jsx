@@ -1,91 +1,147 @@
-// marketing-proj/src/app/removable-insulation-jackets/[country]/page.jsx
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import Script from "next/script";
 
+import { generateCountryEnterprise } from "@/lib/seo/engine/semanticContentEngine";
 import { ACTIVE_LOCATIONS as locations } from "@/lib/data/locations";
 import { europeSeoEngine } from "@/lib/seo/engine/europeSeoEngine";
 import { buildFullSchema } from "@/lib/seo/schema/schemaBuilder";
+import { buildContentRoles } from "@/lib/seo/engine/contentRoleController";
+import RelatedCitiesLinks from "@/components/RelatedCitiesLinks";
+import { buildRelatedCitiesSeo } from "@/lib/seo/engine/country/countryRelatedCitiesEngine";
 
-/* ================= UI COMPONENTS ================= */
+import { fetchServiceDetail } from "@/lib/api";
+import { buildGeoServiceSeo } from "@/lib/seo/engine/shared/serviceGeoEngine";
+import { buildApplicationLinksSeo } from "@/lib/seo/engine/shared/applicationLinksEngine";
+import { buildIndustriesLinksSeo } from "@/lib/seo/engine/shared/industriesLinksEngine";
+import { buildMaterialConstructionSeo } from "@/lib/seo/engine/shared/materialConstructionEngine";
+import { buildExportCountriesSeo } from "@/lib/seo/engine/shared/exportCountriesEngine";
+import { buildFaqSeo } from "@/lib/seo/engine/shared/faqEngine";
+
+/* UI */
 import HeroSlider from "@/components/HeroSlider";
-import ServicesSection from "@/components/ServicesSection";
-import ProductsSection from "@/components/Products";
 import AboutMSEW from "@/components/AboutMSEW";
 import PartnersSection from "@/components/PartnersSection";
 
-/* ================= SEO COMPONENTS ================= */
 import SeoSection from "@/components/seo/SeoSection";
 import SeoCard from "@/components/seo/SeoCard";
-import SeoGrid from "@/components/seo/SeoGrid";
-import SeoFAQ from "@/components/seo/SeoFAQ";
 import SeoTitle from "@/components/seo/SeoTitle";
+import GeoServiceSection from "@/components/seo/GeoServiceSection";
 
-/* ================= CUSTOM COMPONENTS ================= */
 import IntroSection from "@/components/IntroSection";
 import KeyBenefitsStrip from "@/components/KeyBenefitsStrip";
+import ExportCountries from "@/components/ExportCountries";
+import ApplicationLinks from "@/components/ApplicationLinks";
+import IndustriesLinks from "@/components/IndustriesLinks";
+import MaterialConstruction from "@/components/MaterialConstruction";
+import FAQSection from "@/components/faqsection";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 /* =====================================================
-   STATIC PAGE
+   SAFE COUNTRY RESOLVER
 ===================================================== */
-export const dynamic = "force-static";
+function resolveCountry(slug) {
+  if (!slug) return null;
+
+  const key = slug.toLowerCase().trim();
+
+  return (
+    locations?.[key] ||
+    Object.values(locations || {}).find(
+      (c) => c.slug?.toLowerCase() === key
+    ) ||
+    null
+  );
+}
 
 /* =====================================================
    METADATA
 ===================================================== */
 export async function generateMetadata({ params }) {
-  const country = locations?.[params.country];
-  if (!country) return {};
+  const country = resolveCountry(params?.country);
+
+  if (!country?.slug) return {};
 
   const data = europeSeoEngine.generateCountry(country);
   if (!data) return {};
 
-  const canonical = `https://mshahrukhengineeringworks.com/removable-insulation-jackets/${country.slug}`;
-
   return {
     title: data.title,
     description: data.overview?.content?.[0] || "",
-
     alternates: {
-      canonical,
-    },
-
-    openGraph: {
-      title: data.title,
-      description: data.overview?.content?.[0] || "",
-      url: canonical,
-      type: "website",
-    },
-
-    twitter: {
-      card: "summary_large_image",
-      title: data.title,
-      description: data.overview?.content?.[0] || "",
+      canonical: `https://mshahrukhengineeringworks.com/removable-insulation-jackets/${country.slug}`,
     },
   };
 }
 
 /* =====================================================
-   COUNTRY PAGE
+   PAGE
 ===================================================== */
-export default function CountryPage({ params }) {
-  const country = locations?.[params.country];
+export default async function CountryPage({ params }) {
+  const country = resolveCountry(params?.country);
 
-  if (!country) return notFound();
+  if (!country?.slug) return notFound();
 
   const data = europeSeoEngine.generateCountry(country);
-
   if (!data) return notFound();
+
+  const semantic = generateCountryEnterprise({
+    country,
+    seed: country.slug.length,
+  });
+
+  const roles = buildContentRoles({
+    hero: data.hero?.overview?.content?.[0],
+    intro: data.intro?.paragraph1,
+    overview: data.overview?.content?.[0],
+    semantic,
+  });
 
   const schema = buildFullSchema({
     country,
     faq: data.faq || [],
   });
 
+  let service = null;
+
+  try {
+    service = await fetchServiceDetail(
+      "removable-insulation-jackets-manufacturer"
+    );
+  } catch (e) {
+    console.error("Service fetch failed:", e);
+  }
+
+  const geoSeo = buildGeoServiceSeo(country, null, service);
+
+  const applicationLinksSeo = buildApplicationLinksSeo({
+    country,
+  });
+
+  const industriesLinksSeo = buildIndustriesLinksSeo({
+    country,
+  });
+
+  const materialConstructionSeo = buildMaterialConstructionSeo({
+    country,
+  });
+
+  const exportCountriesSeo = buildExportCountriesSeo({
+    country,
+  });
+
+  const faqSeo = buildFaqSeo({
+    country,
+  });
+
+  const relatedCitiesSeo = buildRelatedCitiesSeo({
+    country,
+  });
+
+
   return (
     <main className="pb-20">
-
-      {/* ================= JSON-LD ================= */}
       <Script
         id={`schema-${country.slug}`}
         type="application/ld+json"
@@ -93,58 +149,44 @@ export default function CountryPage({ params }) {
           __html: JSON.stringify(schema || {}),
         }}
       />
- 
-      {/* ================= HERO ================= */}
-      <HeroSlider seoData={data.hero} />
 
-      {/* ================= INTRO ================= */}
-      <IntroSection seoData={data.intro} />
+      <HeroSlider
+        seoData={{
+          ...data.hero,
+          overview: { content: [roles.hero] },
+        }}
+      />
 
-      {/* ================= BENEFITS ================= */}
+      <IntroSection
+        seoData={{
+          intro: {
+            ...data.intro,
+            paragraph1: roles.intro,
+          },
+        }}
+      />
+
       <KeyBenefitsStrip seoData={data} />
 
-      {/* ================= SERVICES ================= */}
-      <SeoSection>
-        <SeoTitle>
-          Industrial Insulation Services in {country.name}
-        </SeoTitle>
+      {service && (
+        <GeoServiceSection seo={geoSeo} service={service} />
+      )}
 
-        <SeoCard>
-          {data.overview?.content?.[0] ||
-            `We provide high-quality insulation solutions across ${country.name} for industrial efficiency and energy saving.`}
-        </SeoCard>
-      </SeoSection>
+      <RelatedCitiesLinks seoContent={relatedCitiesSeo} />
 
-      <ServicesSection seoData={data.serviceGeo} />
+      <ApplicationLinks seoContent={applicationLinksSeo} />
 
-      {/* ================= PRODUCTS ================= */}
-      <ProductsSection />
+      <IndustriesLinks seoContent={industriesLinksSeo} />
 
-      {/* ================= INDUSTRIAL OVERVIEW ================= */}
-      <SeoSection>
-        <SeoTitle>
-          Industrial Applications in {country.name}
-        </SeoTitle>
+      <MaterialConstruction seoContent={materialConstructionSeo} />
 
-        <SeoGrid>
-          {(data.growth?.content || []).map((item, i) => (
-            <SeoCard key={i}>{item}</SeoCard>
-          ))}
-        </SeoGrid>
-      </SeoSection>
+      <ExportCountries seoContent={exportCountriesSeo} />
 
-      {/* ================= ABOUT ================= */}
       <AboutMSEW />
 
-      {/* ================= PARTNERS ================= */}
       <PartnersSection />
 
-      {/* ================= FAQ ================= */}
-      <SeoSection>
-        <SeoTitle>Frequently Asked Questions</SeoTitle>
-        <SeoFAQ data={data.faq || []} />
-      </SeoSection>
-
+      <FAQSection seoContent={faqSeo} />
     </main>
   );
 }

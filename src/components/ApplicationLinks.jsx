@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { applications } from "@/lib/data/applications";
-  
+
 /* ================================================== */
 /* Shuffle Applications For Random Display */
 /* ================================================== */
@@ -20,19 +20,33 @@ function shuffleArray(array) {
 
 /* ================================================== */
 /* Application Links Slider Component */
+/* Default content remains active unless seoContent exists */
 /* ================================================== */
 export default function ApplicationLinks({
   title = "Explore Our Applications",
   description = "Custom removable insulation jackets for valves, flanges, pumps, turbines, generators, compressors, plastic extruders, and industrial piping systems engineered for energy efficiency, worker safety, and lower operating cost.",
+  buttonText = "View All Applications",
+  seoContent = null,
 }) {
+  const finalTitle = seoContent?.title || title;
+  const finalDescription = seoContent?.description || description;
+  const finalButtonText = seoContent?.buttonText || buttonText;
+
+  const sourceApplications =
+    seoContent?.featuredApplications?.length > 0
+      ? seoContent.featuredApplications
+      : applications;
+
   const shuffledApplications = useMemo(() => {
-    return shuffleArray(applications);
-  }, []);
+    return shuffleArray(sourceApplications);
+  }, [sourceApplications]);
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [isSliding, setIsSliding] = useState(false);
 
   useEffect(() => {
+    if (!shuffledApplications.length) return;
+
     const interval = setInterval(() => {
       setIsSliding(true);
 
@@ -67,7 +81,7 @@ export default function ApplicationLinks({
           }}
         >
           <div>
-            <h2>{title}</h2>
+            <h2>{finalTitle}</h2>
 
             <p
               style={{
@@ -75,12 +89,25 @@ export default function ApplicationLinks({
                 marginTop: "0.75rem",
               }}
             >
-              {description}
+              {finalDescription}
             </p>
+
+            {seoContent?.ctaText && (
+              <p
+                style={{
+                  maxWidth: "850px",
+                  marginTop: "0.75rem",
+                  color: "var(--accent)",
+                  fontWeight: 700,
+                }}
+              >
+                {seoContent.ctaText}
+              </p>
+            )}
           </div>
 
           <Link href="/applications" className="btn-primary">
-            View All Applications
+            {finalButtonText}
           </Link>
         </div>
 
@@ -92,7 +119,6 @@ export default function ApplicationLinks({
             position: "relative",
           }}
         >
-          {/* SINGLE FLOATING CARD */}
           <Link
             key={activeCard.slug}
             href={`/applications/${activeCard.slug}`}
@@ -102,19 +128,13 @@ export default function ApplicationLinks({
               color: "inherit",
               overflow: "hidden",
               display: "grid",
-
-              /* Larger image, smaller content */
               gridTemplateColumns: "minmax(0, 1.35fr) minmax(320px, 0.65fr)",
-
               alignItems: "stretch",
               minHeight: "480px",
-
               transform: isSliding
                 ? "translateX(-115%) scale(0.96)"
                 : "translateX(0) scale(1)",
-
               opacity: isSliding ? 0 : 1,
-
               transition:
                 "transform 0.7s cubic-bezier(0.4,0,0.2,1), opacity 0.7s ease",
             }}
@@ -138,11 +158,8 @@ export default function ApplicationLinks({
                   width: "100%",
                   height: "100%",
                   minHeight: "480px",
-
-                  /* Full image visible */
                   objectFit: "contain",
                   objectPosition: "center center",
-
                   display: "block",
                   background: "#0a2540",
                 }}
@@ -181,7 +198,6 @@ export default function ApplicationLinks({
                 {activeCard.description}
               </p>
 
-              {/* BENEFITS */}
               {activeCard.benefits && (
                 <div
                   style={{
@@ -215,7 +231,6 @@ export default function ApplicationLinks({
                 </div>
               )}
 
-              {/* CTA */}
               <div
                 style={{
                   display: "flex",

@@ -1,4 +1,10 @@
 export default function IndustryCTA({ industry }) {
+  const whatsappText = encodeURIComponent(
+    `Hello MSEW, I need quotation for ${industry.pageTitle}. Please share details.`
+  );
+
+  const emailSubject = encodeURIComponent(`RFQ - ${industry.pageTitle}`);
+
   return (
     <section className="section bg-secondary">
       <div className="container">
@@ -22,11 +28,19 @@ export default function IndustryCTA({ industry }) {
           </p>
 
           <div className="flex flex-wrap justify-center gap-4">
-            <a href="https://wa.me/923052646312" className="btn-primary">
+            <a
+              href={`https://wa.me/923052646312?text=${whatsappText}`}
+              className="btn-primary"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               WhatsApp RFQ
             </a>
 
-            <a href="mailto:hellomsew@gmail.com" className="btn-secondary">
+            <a
+              href={`mailto:hellomsew@gmail.com?subject=${emailSubject}`}
+              className="btn-secondary"
+            >
               Email Inquiry
             </a>
           </div>

@@ -29,7 +29,7 @@ export function generateMetadata({ params }) {
     title: industry.metaTitle,
     description: industry.metaDescription,
     alternates: {
-      canonical: `/industries/${industry.slug}`,
+      canonical: `https://mshahrukhengineeringworks.com/industries/${industry.slug}`
     },
   };
 }

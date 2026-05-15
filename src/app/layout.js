@@ -1,3 +1,4 @@
+// /home/shahrukh-eng/marketing-proj/src/app/layout.js
 import "./globals.css";
 import ClientLayoutWrapper from "./ClientWrapper";
 import AnalyticsLoader from "./AnalyticsLoader";

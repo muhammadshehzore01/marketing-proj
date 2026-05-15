@@ -2,16 +2,13 @@
 🔥 LEVEL 4 ENTERPRISE SEO ENGINE (SEMANTIC + SCALABLE)
 marketing-proj/src/lib/seo/engine/semanticContentEngine.js
 ===================================================== */
-/* =====================================================
-🔥 LEVEL 4 ENTERPRISE SEO ENGINE (SEMANTIC + SCALABLE)
-===================================================== */
 
 /* =====================================================
-   🔹 CORE PICKER (IMPROVED WEIGHTED VARIATION)
+   🔹 CORE PICKER (IMPROVED ENTROPY SEED)
 ===================================================== */
-function pick(seed, arr) {
-  const index = Math.abs(Math.floor(Math.sin(seed) * 10000)) % arr.length;
-  return arr[index];
+function pick(seed, arr, offset = 0) {
+  const safeSeed = Math.abs(seed * 9301 + offset * 49297) % 233280;
+  return arr[safeSeed % arr.length];
 }
 
 /* =====================================================
@@ -40,19 +37,31 @@ const industryGraph = {
    🔥 KEYWORD CLUSTERS
 ===================================================== */
 const keywordClusters = {
-  insulation: ["insulation jacket", "thermal cover", "heat shield", "lagging system"],
-  efficiency: ["energy efficiency", "thermal efficiency", "operational efficiency"],
+  insulation: [
+    "insulation jacket",
+    "thermal cover",
+    "heat shield",
+    "lagging system",
+  ],
+  efficiency: [
+    "energy efficiency",
+    "thermal efficiency",
+    "operational efficiency",
+  ],
   loss: ["heat loss", "energy loss", "thermal loss"],
 };
 
 /* =====================================================
-   🔥 SMART REPLACE (FIXED GLOBAL + RELIABLE)
+   🔥 SMART REPLACE (SAFE + CONTROLLED)
 ===================================================== */
 function smartReplace(text, seed) {
+  if (!text) return "";
+
+  // only replace when word boundary exists
   return text
-    .replace(/insulation/g, pick(seed, keywordClusters.insulation))
-    .replace(/efficiency/g, pick(seed + 1, keywordClusters.efficiency))
-    .replace(/heat loss/g, pick(seed + 2, keywordClusters.loss));
+    .replace(/\binsulation\b/g, pick(seed, keywordClusters.insulation, 1))
+    .replace(/\befficiency\b/g, pick(seed, keywordClusters.efficiency, 2))
+    .replace(/\bheat loss\b/g, pick(seed, keywordClusters.loss, 3));
 }
 
 /* =====================================================
@@ -73,16 +82,20 @@ function intro(city, country, industry) {
 /* =====================================================
    🔥 TECHNICAL
 ===================================================== */
-function technical(city, industryData) {
-  const equipment = pick(city.length, industryData.equipment);
+function technical(city, industryData, seed) {
+  const equipment = pick(seed + city.length, industryData.equipment);
+
   return `Industrial systems such as ${equipment} operate under extreme thermal conditions requiring advanced heat management solutions.`;
 }
 
 /* =====================================================
-   🔥 RISK (FIXED + CITY INTELLIGENCE SUPPORT)
+   🔥 RISK (IMPROVED VARIATION)
 ===================================================== */
-function risk(city, industryData, cityRisk) {
-  const r = cityRisk || pick(city.length + 3, industryData.risk);
+function risk(city, industryData, cityRisk, seed) {
+  const r =
+    cityRisk ||
+    pick(seed + city.length * 3, industryData.risk);
+
   return `A major challenge in ${city} industries is ${r}, which directly impacts operational efficiency and system reliability.`;
 }
 
@@ -94,7 +107,7 @@ function solution(city) {
 }
 
 /* =====================================================
-   🔥 CTA (NOW VARIATION ENABLED)
+   🔥 CTA (VARIATION FIXED)
 ===================================================== */
 function cta(city, seed) {
   const variants = [
@@ -103,21 +116,25 @@ function cta(city, seed) {
     `Industrial-grade insulation jackets in ${city} ensure long-term thermal performance and energy savings.`,
   ];
 
-  return pick(seed, variants);
+  return pick(seed, variants, 4);
 }
 
 /* =====================================================
-   🔥 CITY INTELLIGENCE RESOLVER
+   🔥 INDUSTRY RESOLVER (FIXED LOGIC)
 ===================================================== */
-function getIndustryData(country) {
-  return industryGraph[country.industries?.[0]] || {
-    equipment: [fallback.equipment],
-    risk: [fallback.risk],
-  };
+function getIndustryData(country, city) {
+  const key =
+    country?.industries?.[0] ||
+    "manufacturing";
+
+  return (
+    industryGraph[key] ||
+    industryGraph.manufacturing
+  );
 }
 
 /* =====================================================
-   🔥 CITY GENERATOR (FIXED + CITY NARRATIVE SUPPORT)
+   🔥 CITY GENERATOR (FIXED CORE)
 ===================================================== */
 export function generateCityEnterprise({
   city,
@@ -125,25 +142,28 @@ export function generateCityEnterprise({
   seed,
   cityNarratives = {},
 }) {
-  const industryKey = country.industries?.[0] || "manufacturing";
-  const industryData = industryGraph[industryKey] || industryGraph.manufacturing;
+  if (!city || !country) return "";
+
+  const industryKey =
+    country.industries?.[0] || "manufacturing";
+
+  const industryData = getIndustryData(country, city);
 
   const cityRisk = cityNarratives?.[city.name]?.problem;
 
-  const base = {
-    intro: intro(city.display, country.name, industryKey),
-    tech: technical(city.display, industryData),
-    risk: risk(city.display, industryData, cityRisk),
-    solution: solution(city.display),
-    cta: cta(city.display, seed),
-  };
+  const baseIntro = intro(city.display, country.name, industryKey);
+
+  const tech = technical(city.display, industryData, seed);
+  const riskText = risk(city.display, industryData, cityRisk, seed);
+  const sol = solution(city.display);
+  const ctaText = cta(city.display, seed);
 
   const final = {
-    intro: smartReplace(base.intro, seed),
-    tech: smartReplace(base.tech, seed),
-    risk: smartReplace(base.risk, seed),
-    solution: smartReplace(base.solution, seed),
-    cta: smartReplace(base.cta, seed),
+    intro: smartReplace(baseIntro, seed),
+    tech: smartReplace(tech, seed),
+    risk: smartReplace(riskText, seed),
+    solution: smartReplace(sol, seed),
+    cta: smartReplace(ctaText, seed),
   };
 
   return [
@@ -156,10 +176,12 @@ export function generateCityEnterprise({
 }
 
 /* =====================================================
-   🔥 COUNTRY GENERATOR
+   🔥 COUNTRY GENERATOR (FIXED)
 ===================================================== */
 export function generateCountryEnterprise({ country, seed }) {
-  const industry = country.industries?.[0] || "industrial manufacturing";
+  const industry =
+    country?.industries?.[0] ||
+    "industrial manufacturing";
 
   return [
     `${country.name} is a major European hub for ${industry}, supporting large-scale energy and manufacturing systems.`,

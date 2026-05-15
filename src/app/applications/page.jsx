@@ -15,31 +15,70 @@ export const metadata = {
 export default function ApplicationsPage() {
   return (
     <main className="bg-primary">
-      <section className="section">
+      <section
+        className="section"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(10,15,25,0.78), rgba(10,15,25,0.78)), url('/img/applications/applications-removable-insulation-hero.webp')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
         <div className="container">
           <div
-            className="glass-card animate-fadeIn"
+            className="animate-fadeIn"
             style={{
-              padding: "clamp(1.25rem, 4vw, 3rem)",
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-              gap: "2rem",
+              minHeight: "580px",
+              display: "flex",
               alignItems: "center",
+              justifyContent: "center",
+              textAlign: "center",
+              padding: "clamp(2rem, 5vw, 4rem) 0",
             }}
           >
-            <div>
-              <p style={{ color: "var(--accent)", fontWeight: 800 }}>
+            <div
+              style={{
+                maxWidth: "950px",
+              }}
+            >
+              <p
+                style={{
+                  color: "var(--accent)",
+                  fontWeight: 800,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.08em",
+                  marginBottom: "1rem",
+                }}
+              >
                 Industrial Thermal Insulation Applications
               </p>
 
-              <h1>Removable Insulation Jackets for Industrial Equipment</h1>
+              <h1
+                style={{
+                  color: "#ffffff",
+                  marginBottom: "1.5rem",
+                  maxWidth: "950px",
+                  marginInline: "auto",
+                }}
+              >
+                Removable Insulation Jackets for Industrial Equipment
+              </h1>
 
-              <p style={{ maxWidth: "850px", marginTop: "1rem" }}>
-                Custom-designed thermal insulation covers engineered to reduce
-                heat loss, improve energy efficiency, lower fuel cost, and
-                protect workers from hot industrial surfaces across valves,
-                flanges, pumps, turbines, generators, compressors, and piping
-                systems.
+              <p
+                style={{
+                  maxWidth: "850px",
+                  margin: "0 auto",
+                  color: "rgba(255,255,255,0.92)",
+                  lineHeight: 1.9,
+                  fontSize: "1.08rem",
+                }}
+              >
+                Custom-engineered removable insulation jackets for valves,
+                flanges, pumps, turbines, generators, compressors, plastic
+                extruders, and industrial piping systems designed to lower fuel
+                cost, improve maintenance efficiency, enhance worker safety, and
+                reduce thermal energy loss across industrial operations.
               </p>
 
               <div
@@ -47,11 +86,12 @@ export default function ApplicationsPage() {
                   display: "flex",
                   gap: "1rem",
                   flexWrap: "wrap",
-                  marginTop: "2rem",
+                  justifyContent: "center",
+                  marginTop: "2.5rem",
                 }}
               >
                 <Link href="/contact" className="btn-primary">
-                  Request Quotation
+                  Request Quick Quotation
                 </Link>
 
                 <a
@@ -60,32 +100,9 @@ export default function ApplicationsPage() {
                   rel="noopener noreferrer"
                   className="btn-secondary"
                 >
-                  WhatsApp Inquiry
+                  WhatsApp Technical Inquiry
                 </a>
               </div>
-            </div>
-
-            <div
-              style={{
-                borderRadius: "var(--radius-md)",
-                overflow: "hidden",
-                border: "1px solid var(--border)",
-                minHeight: "280px",
-              }}
-            >
-              <img
-                src="/img/applications/industrial-piping-insulation-covers.webp"
-                alt="Industrial removable insulation jackets for high temperature equipment"
-                fetchPriority="high"
-                decoding="async"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  minHeight: "280px",
-                  objectFit: "cover",
-                  display: "block",
-                }}
-              />
             </div>
           </div>
         </div>
@@ -217,9 +234,9 @@ export default function ApplicationsPage() {
         </div>
       </section>
 
-      <Industries/>
+      <Industries />
 
-      <KeyBenefitsStrip/>
+      <KeyBenefitsStrip />
 
       <section className="section bg-secondary">
         <div className="container">

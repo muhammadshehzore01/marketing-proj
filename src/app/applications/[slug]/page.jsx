@@ -21,12 +21,23 @@ export function generateMetadata({ params }) {
   if (!application) {
     return {
       title: "Application Not Found",
+      robots: {
+        index: false,
+        follow: true,
+      },
     };
   }
 
   return {
     title: `${application.title} | Removable Thermal Insulation Covers`,
     description: application.description,
+    alternates: {
+      canonical: `https://mshahrukhengineeringworks.com/applications/${application.slug}`,
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
   };
 }
 
@@ -73,7 +84,9 @@ export default function ApplicationDetailPage({ params }) {
                 </Link>
 
                 <a
-                  href="https://wa.me/923052646312"
+                  href={`https://wa.me/923052646312?text=${encodeURIComponent(
+                    `Hello MSEW, I need quotation for ${application.title}.`
+                  )}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-secondary"
@@ -267,7 +280,9 @@ export default function ApplicationDetailPage({ params }) {
               </Link>
 
               <a
-                href="https://wa.me/923052646312"
+                href={`https://wa.me/923052646312?text=${encodeURIComponent(
+                  `Hello MSEW, I need custom ${application.title}.`
+                )}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-secondary"
@@ -275,7 +290,12 @@ export default function ApplicationDetailPage({ params }) {
                 Send Details on WhatsApp
               </a>
 
-              <a href="mailto:hellomsew@gmail.com" className="btn-secondary">
+              <a
+                href={`mailto:hellomsew@gmail.com?subject=${encodeURIComponent(
+                  `RFQ - ${application.title}`
+                )}`}
+                className="btn-secondary"
+              >
                 Email Drawing / Photos
               </a>
             </div>
@@ -299,6 +319,8 @@ function ApplicationImage({ src, alt, minHeight = "330px" }) {
       <img
         src={src}
         alt={alt}
+        loading="lazy"
+        decoding="async"
         style={{
           width: "100%",
           height: "100%",

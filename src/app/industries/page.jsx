@@ -11,21 +11,46 @@ export const metadata = {
 export default function IndustriesPage() {
   return (
     <main>
-      <section className="section bg-primary">
-        <div className="container">
+      <section
+        className="section relative"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(10,15,25,0.75), rgba(10,15,25,0.75)), url('/img/industries/industries-insulation-hero.webp')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
+        <div className="container relative z-10">
           <p
             className="mb-4"
             style={{
               color: "var(--accent)",
               fontWeight: 800,
+              textTransform: "uppercase",
+              letterSpacing: "0.08em",
             }}
           >
             Industries We Serve
           </p>
 
-          <h1>Removable Insulation Jackets for Industrial Plants</h1>
+          <h1
+            style={{
+              color: "#ffffff",
+              maxWidth: "900px",
+            }}
+          >
+            Removable Insulation Jackets for Industrial Plants
+          </h1>
 
-          <p className="max-w-3xl">
+          <p
+            className="max-w-3xl"
+            style={{
+              color: "rgba(255,255,255,0.92)",
+              fontSize: "1.1rem",
+              lineHeight: 1.8,
+            }}
+          >
             We design and manufacture high-temperature removable insulation
             covers for industries that need energy saving, worker safety, heat
             loss reduction, and easy maintenance access.
@@ -44,12 +69,13 @@ export default function IndustriesPage() {
                 background: "var(--surface)",
                 border: "1px solid var(--border)",
                 borderRadius: "var(--radius-md)",
+                transition: "all 0.3s ease",
               }}
             >
               <div className="relative h-48 overflow-hidden">
                 <Image
-                  src={industry.image}
-                  alt={industry.title}
+                  src={industry.detailImage}
+                  alt={industry.pageTitle}
                   fill
                   loading={index < 3 ? "eager" : "lazy"}
                   priority={index === 0}
@@ -59,19 +85,34 @@ export default function IndustriesPage() {
               </div>
 
               <div className="p-5">
+                <p
+                  style={{
+                    color: "var(--accent)",
+                    fontWeight: 800,
+                    fontSize: "0.85rem",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.08em",
+                    marginBottom: "0.75rem",
+                  }}
+                >
+                  {industry.slug.replace(/-/g, " ")}
+                </p>
+
                 <h3
                   style={{
                     fontSize: "clamp(1.05rem, 1.4vw, 1.35rem)",
                     marginBottom: "0.85rem",
+                    lineHeight: 1.4,
                   }}
                 >
-                  {industry.title}
+                  {industry.pageTitle}
                 </h3>
 
                 <p
                   className="mb-4"
                   style={{
                     fontSize: "0.95rem",
+                    lineHeight: 1.6,
                   }}
                 >
                   {industry.description}

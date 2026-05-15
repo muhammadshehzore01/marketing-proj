@@ -1,96 +1,63 @@
 // marketing-proj/src/lib/seo/engine/shared/benefitsEngine.js
+const baseBenefits = [
+  {
+    title: "Heat Loss Reduction",
+    text: "Reduce exposed surface heat from industrial equipment and improve thermal efficiency.",
+  },
+  {
+    title: "Worker Safety",
+    text: "Protect operators and maintenance teams from burn risks around high-temperature surfaces.",
+  },
+  {
+    title: "Energy Cost Saving",
+    text: "Lower fuel and energy consumption by retaining heat inside the process system.",
+  },
+  {
+    title: "Easy Maintenance Access",
+    text: "Remove and reinstall insulation jackets during inspection without damaging the cover.",
+  },
+  {
+    title: "Reusable Design",
+    text: "Use the same insulation cover repeatedly during shutdowns, servicing, and maintenance cycles.",
+  },
+  {
+    title: "Equipment Protection",
+    text: "Support stable operation and protect nearby components from radiant heat exposure.",
+  },
+];
 
-export function generateBenefits(location, keyword, type = "country") {
-  const name =
-    location?.display ||
-    location?.name ||
+function pick(seed, arr) {
+  return arr[Math.abs(seed) % arr.length];
+}
+
+export function generateBenefits(entity, keyword = "", type = "global") {
+  const seedBase =
+    entity?.slug?.length ||
+    entity?.name?.length ||
+    entity?.display?.length ||
+    1;
+
+  const location =
+    entity?.display ||
+    entity?.name ||
     "industrial facilities";
 
-  const countryBenefits = {
-    germany: [
-      "precision manufacturing",
-      "automotive production",
-      "energy-intensive machinery",
-    ],
-    france: [
-      "refinery systems",
-      "nuclear facilities",
-      "industrial processing",
-    ],
-    italy: [
-      "manufacturing equipment",
-      "industrial automation",
-      "thermal processing",
-    ],
-    spain: [
-      "renewable energy plants",
-      "industrial systems",
-      "heavy production units",
-    ],
-    netherlands: [
-      "chemical processing",
-      "marine engineering",
-      "port industries",
-    ],
-    belgium: [
-      "chemical plants",
-      "industrial production",
-      "energy systems",
-    ],
-    sweden: [
-      "green manufacturing",
-      "advanced engineering",
-      "energy optimization",
-    ],
-    norway: [
-      "offshore systems",
-      "oil and gas operations",
-      "marine facilities",
-    ],
-    denmark: [
-      "wind power facilities",
-      "energy plants",
-      "industrial equipment",
-    ],
-  };
+  const context =
+    type === "city"
+      ? `in ${location}`
+      : type === "country"
+      ? `across ${location}`
+      : "in industrial environments";
 
-  const slug = location?.slug || "";
-  const sectors =
-    countryBenefits[slug] || [
-      "industrial systems",
-      "high-temperature equipment",
-      "manufacturing facilities",
-    ];
+  const selected = [];
 
-  return [
-    {
-      title: "Thermal Energy Efficiency",
-      desc: `${keyword} improve thermal efficiency across ${name} industrial systems and reduce unnecessary heat loss.`,
-    },
+  for (let i = 0; i < 4; i++) {
+    const benefit = pick(seedBase + i, baseBenefits);
 
-    {
-      title: "Lower Operating Costs",
-      desc: `Companies in ${name} reduce fuel consumption and long-term energy costs using advanced insulation solutions.`,
-    },
+    selected.push(
+      `${benefit.title}: ${benefit.text} This helps ${keyword || "thermal insulation systems"} deliver stronger performance ${context}.`
+    );
+  }
 
-    {
-      title: "Improved Worker Safety",
-      desc: `Protect teams from high-temperature exposure in ${sectors[0]} and related industrial environments.`,
-    },
-
-    {
-      title: "Faster Maintenance Access",
-      desc: `Removable insulation jackets allow quick servicing without damaging equipment insulation.`,
-    },
-
-    {
-      title: "Reusable Long-Life Design",
-      desc: `Durable reusable insulation systems built for demanding ${sectors[1]} operations.`,
-    },
-
-    {
-      title: "Custom Engineered Fit",
-      desc: `Tailored insulation jackets for valves, turbines, pumps, and compressors used in ${sectors[2]}.`,
-    },
-  ];
+  return selected;
 }

@@ -7,16 +7,41 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 
 const SERVICES_CACHE_KEY = "msew_nav_services_v3";
-const SERVICES_CACHE_TTL_MS = 1000 * 60 * 15; // 15 minutes
+const SERVICES_CACHE_TTL_MS = 1000 * 60 * 15;
 const SERVICES_LIMIT = 5;
+
+const fallbackServices = [
+  {
+    name: "Metallic Expansion Bellows Manufacturer in Pakistan",
+    slug: "metallic-expansion-bellows-manufacturer-pakistan",
+  },
+  {
+    name: "Removable Insulation Jackets Manufacturer in Pakistan",
+    slug: "removable-insulation-jackets-manufacturer-pakistan",
+  },
+  {
+    name: "Rubber Expansion Bellows in Pakistan",
+    slug: "rubber-expansion-bellows-pakistan",
+  },
+  {
+    name: "Site Measurement & Installation Support",
+    slug: "site-measurement-installation-support",
+  },
+  {
+    name: "Thermal Insulation Material Supply",
+    slug: "thermal-insulation-material-supply",
+  },
+];
 
 function readCache() {
   try {
     const raw = sessionStorage.getItem(SERVICES_CACHE_KEY);
     if (!raw) return null;
+
     const parsed = JSON.parse(raw);
     if (!parsed?.ts || !Array.isArray(parsed.data)) return null;
     if (Date.now() - parsed.ts > SERVICES_CACHE_TTL_MS) return null;
+
     return parsed.data;
   } catch {
     return null;
@@ -38,22 +63,20 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [desktopServicesOpen, setDesktopServicesOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
-
   const [services, setServices] = useState([]);
   const [servicesLoaded, setServicesLoaded] = useState(false);
 
   const desktopDropdownRef = useRef(null);
 
-  // Lock body scroll when mobile menu open
   useEffect(() => {
     const prev = document.body.style.overflow;
     document.body.style.overflow = menuOpen ? "hidden" : "";
+
     return () => {
       document.body.style.overflow = prev;
     };
   }, [menuOpen]);
 
-  // ESC closes all
   useEffect(() => {
     const onKeyDown = (e) => {
       if (e.key === "Escape") {
@@ -62,30 +85,33 @@ export default function Navbar() {
         setMobileServicesOpen(false);
       }
     };
+
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
   }, []);
 
-  // Close desktop dropdown on outside click
   useEffect(() => {
     const onDown = (e) => {
       if (!desktopDropdownRef.current) return;
+
       if (!desktopDropdownRef.current.contains(e.target)) {
         setDesktopServicesOpen(false);
       }
     };
+
     document.addEventListener("mousedown", onDown);
     return () => document.removeEventListener("mousedown", onDown);
   }, []);
 
-  // Lazy-load services only when dropdown/accordion opens
   useEffect(() => {
     const shouldLoad = desktopServicesOpen || mobileServicesOpen;
     if (!shouldLoad) return;
     if (!apiBase) return;
 
     const cached = readCache();
-    if (cached && services.length === 0) setServices(cached);
+    if (cached && services.length === 0) {
+      setServices(cached);
+    }
 
     if (servicesLoaded) return;
 
@@ -98,7 +124,9 @@ export default function Navbar() {
           headers: { "Content-Type": "application/json" },
           cache: "no-store",
         });
+
         if (!res.ok) throw new Error("Failed to fetch services");
+
         const data = await res.json();
         if (!Array.isArray(data)) return;
 
@@ -111,9 +139,15 @@ export default function Navbar() {
     }
 
     fetchServices();
+
     return () => controller.abort();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [desktopServicesOpen, mobileServicesOpen, apiBase]);
+  }, [
+    desktopServicesOpen,
+    mobileServicesOpen,
+    apiBase,
+    services.length,
+    servicesLoaded,
+  ]);
 
   const navServicesTop5 = useMemo(() => {
     const nav = services
@@ -121,12 +155,14 @@ export default function Navbar() {
       .sort((a, b) => {
         const ao = Number.isFinite(a?.nav_order) ? a.nav_order : 9999;
         const bo = Number.isFinite(b?.nav_order) ? b.nav_order : 9999;
+
         if (ao !== bo) return ao - bo;
+
         return String(a?.name || "").localeCompare(String(b?.name || ""));
       })
       .slice(0, SERVICES_LIMIT);
 
-    return nav;
+    return nav.length ? nav : fallbackServices;
   }, [services]);
 
   const closeAll = () => {
@@ -134,6 +170,16 @@ export default function Navbar() {
     setDesktopServicesOpen(false);
     setMobileServicesOpen(false);
   };
+
+  const mainLinks = [
+    { label: "Home", href: "/" },
+    { label: "Applications", href: "/applications" },
+    { label: "Industries", href: "/industries" },
+    { label: "Products", href: "/products" },
+    { label: "Blogs", href: "/blogs" },
+    { label: "About Us", href: "/about" },
+    { label: "Contact Us", href: "/contact" },
+  ];
 
   return (
     <nav
@@ -144,16 +190,16 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
-          {/* Logo */}
           <Link
             href="/"
             className="flex items-center gap-3 group"
             onClick={closeAll}
+            aria-label="MSEW Home"
           >
             <div className="relative">
               <Image
                 src="/img/logo.webp"
-                alt="MSEW Logo"
+                alt="MSEW industrial insulation jackets and expansion bellows manufacturer logo"
                 width={180}
                 height={60}
                 priority
@@ -161,16 +207,13 @@ export default function Navbar() {
                 className="rounded-full ring-0 ring-[var(--accent)]/30 group-hover:ring-[var(--accent)]/60 transition-all duration-300"
               />
             </div>
-            <span className="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[var(--accent)] to-[var(--accent-hover)] hidden sm:block" />
           </Link>
 
-          {/* Desktop */}
-          <div className="hidden md:flex items-center gap-9 text-[var(--text-primary)] font-medium">
+          <div className="hidden md:flex items-center gap-7 text-[var(--text-primary)] font-medium">
             <Link href="/" className="hover:text-[var(--accent)]">
               Home
             </Link>
 
-            {/* Services (CLICK based) */}
             <div ref={desktopDropdownRef} className="relative">
               <button
                 type="button"
@@ -179,7 +222,7 @@ export default function Navbar() {
                 aria-expanded={desktopServicesOpen}
                 className="flex items-center gap-1 hover:text-[var(--accent)]"
               >
-                Services{" "}
+                Services
                 <ChevronDown
                   size={16}
                   className={
@@ -197,51 +240,54 @@ export default function Navbar() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 6 }}
                     transition={{ duration: 0.18 }}
-                    className="absolute left-0 top-full mt-3 w-72 border border-[var(--border)] rounded-xl shadow-2xl overflow-hidden z-50 backdrop-blur-xl"
+                    className="absolute left-0 top-full mt-3 w-80 border border-[var(--border)] rounded-xl shadow-2xl overflow-hidden z-50 backdrop-blur-xl"
                     style={{
-                      background: "rgba(10, 37, 64, 0.92)",
+                      background: "rgba(10, 37, 64, 0.94)",
                     }}
                   >
                     <div className="py-2">
-                      {navServicesTop5.length === 0 ? (
-                        <div className="px-5 py-4 text-sm opacity-80 text-[var(--text-primary)]">
-                          Loading...
-                        </div>
-                      ) : (
-                        navServicesTop5.map((service) => (
-                          <Link
-                            key={service.slug}
-                            href={`/services/${service.slug}`}
-                            className="block px-5 py-3 hover:bg-[var(--surface-elevated)] hover:text-[var(--accent)] transition text-[var(--text-primary)]"
-                            onClick={closeAll}
-                          >
-                            {service.name}
-                          </Link>
-                        ))
-                      )}
+                      {navServicesTop5.map((service) => (
+                        <Link
+                          key={service.slug}
+                          href={`/services/${service.slug}`}
+                          className="block px-5 py-3 hover:bg-[var(--surface-elevated)] hover:text-[var(--accent)] transition text-[var(--text-primary)] text-sm"
+                          onClick={closeAll}
+                        >
+                          {service.name}
+                        </Link>
+                      ))}
+
+                      <div className="border-t border-[var(--border)] mt-2 pt-2">
+                        <Link
+                          href="/services"
+                          className="block px-5 py-3 hover:bg-[var(--surface-elevated)] hover:text-[var(--accent)] transition text-[var(--accent)] text-sm font-semibold"
+                          onClick={closeAll}
+                        >
+                          View All Services
+                        </Link>
+                      </div>
                     </div>
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
 
-            <Link href="/products" className="hover:text-[var(--accent)]">
-              Products
-            </Link>
-            <Link href="/contact" className="hover:text-[var(--accent)]">
-              Contact Us
-            </Link>
-            <Link href="/about" className="hover:text-[var(--accent)]">
-              About Us
-            </Link>
+            {mainLinks.slice(1).map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="hover:text-[var(--accent)]"
+                onClick={closeAll}
+              >
+                {link.label}
+              </Link>
+            ))}
 
-            {/* ✅ Theme-consistent CTA */}
             <Link href="/get-quote" onClick={closeAll} className="btn-primary">
               Get Quote
             </Link>
           </div>
 
-          {/* Mobile toggle */}
           <button
             type="button"
             onClick={() => setMenuOpen((v) => !v)}
@@ -254,11 +300,9 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Panel */}
       <AnimatePresence>
         {menuOpen && (
           <>
-            {/* Backdrop */}
             <motion.button
               aria-label="Close menu"
               className="fixed inset-0 bg-black/40 md:hidden"
@@ -268,11 +312,10 @@ export default function Navbar() {
               onClick={closeAll}
             />
 
-            {/* Drawer */}
             <motion.div
               className="fixed top-0 right-0 h-dvh w-[86%] max-w-sm border-l border-[var(--border)] shadow-2xl md:hidden z-[10000] backdrop-blur-xl"
               style={{
-                background: "rgba(10, 37, 64, 0.92)",
+                background: "rgba(10, 37, 64, 0.94)",
               }}
               initial={{ x: 50, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
@@ -297,7 +340,6 @@ export default function Navbar() {
                   Home
                 </Link>
 
-                {/* Services Accordion */}
                 <button
                   type="button"
                   onClick={() => setMobileServicesOpen((v) => !v)}
@@ -308,7 +350,9 @@ export default function Navbar() {
                   <ChevronDown
                     size={18}
                     className={
-                      mobileServicesOpen ? "rotate-180 transition" : "transition"
+                      mobileServicesOpen
+                        ? "rotate-180 transition"
+                        : "transition"
                     }
                   />
                 </button>
@@ -323,50 +367,46 @@ export default function Navbar() {
                       className="overflow-hidden rounded-lg border border-[var(--border)]"
                     >
                       <div className="py-2">
-                        {navServicesTop5.length === 0 ? (
-                          <div className="px-4 py-3 text-sm opacity-80">
-                            Loading...
-                          </div>
-                        ) : (
-                          navServicesTop5.map((s) => (
-                            <Link
-                              key={s.slug}
-                              href={`/services/${s.slug}`}
-                              onClick={closeAll}
-                              className="block px-4 py-3 text-sm hover:bg-[var(--surface-elevated)] transition"
-                            >
-                              {s.name}
-                            </Link>
-                          ))
-                        )}
+                        {navServicesTop5.map((service) => (
+                          <Link
+                            key={service.slug}
+                            href={`/services/${service.slug}`}
+                            onClick={closeAll}
+                            className="block px-4 py-3 text-sm hover:bg-[var(--surface-elevated)] transition"
+                          >
+                            {service.name}
+                          </Link>
+                        ))}
+
+                        <div className="border-t border-[var(--border)] mt-2 pt-2">
+                          <Link
+                            href="/services"
+                            onClick={closeAll}
+                            className="block px-4 py-3 text-sm font-semibold text-[var(--accent)] hover:bg-[var(--surface-elevated)] transition"
+                          >
+                            View All Services
+                          </Link>
+                        </div>
                       </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
 
-                <Link
-                  href="/products"
-                  onClick={closeAll}
-                  className="block py-2"
-                >
-                  Products
-                </Link>
-                <Link
-                  href="/contact"
-                  onClick={closeAll}
-                  className="block py-2"
-                >
-                  Contact Us
-                </Link>
-                <Link href="/about" onClick={closeAll} className="block py-2">
-                  About Us
-                </Link>
+                {mainLinks.slice(1).map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={closeAll}
+                    className="block py-2"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
 
-                {/* ✅ Theme-consistent CTA */}
                 <Link
                   href="/get-quote"
                   onClick={closeAll}
-                  className="btn-primary w-full"
+                  className="btn-primary w-full text-center block mt-4"
                 >
                   Get Quote
                 </Link>

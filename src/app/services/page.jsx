@@ -8,7 +8,7 @@ export const metadata = {
   description:
     "MSEW provides removable insulation jackets, metallic expansion bellows, site measurement & installation support, rubber expansion bellows and thermal insulation material in Pakistan. Export support available worldwide.",
   alternates: {
-    canonical: "/services",
+    canonical: "https://mshahrukhengineeringworks.com/services"
   },
   openGraph: {
     title:

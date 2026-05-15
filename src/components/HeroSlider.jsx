@@ -342,7 +342,7 @@ export default function HeroSlider({ seoData = null }) {
             <div className="mt-6 flex gap-4">
               <Link
                 href="/get-quote"
-                className="bg-white text-black px-5 py-3 rounded-xl font-semibold"
+                className="border border-white px-5 py-3 rounded-xl"
               >
                 Get Quote
               </Link>

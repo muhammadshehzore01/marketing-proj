@@ -98,12 +98,13 @@
 //   );
 // }
 
-
-// marketing-proj/src/components/IntroSection.jsx
-
 import Image from "next/image";
 
 export default function IntroSection({ seoData = null }) {
+  const intro = seoData?.intro;
+
+  const isDynamic = !!intro;
+
   return (
     <section className="py-16 px-6 md:px-16 bg-transparent">
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
@@ -111,26 +112,32 @@ export default function IntroSection({ seoData = null }) {
         {/* LEFT CONTENT */}
         <div>
           <span className="inline-block mb-4 text-sm font-semibold text-orange-500 uppercase tracking-wide">
-            {seoData?.label || "Industrial Energy Saving Solutions"}
+            {intro?.label || "Industrial Energy Saving Solutions"}
           </span>
 
           <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight mb-6">
-            {seoData?.heading || "High-Temperature Removable Insulation Jackets"}
+            {intro?.heading ||
+              "High-Temperature Removable Insulation Jackets"}
           </h2>
 
           <p className="text-gray-300 leading-relaxed mb-5">
-            {seoData?.paragraph1 ||
-              "Our removable insulation jackets are engineered to reduce heat loss, improve industrial energy efficiency, and enhance worker safety by covering high-temperature equipment surfaces."}
+            {intro?.paragraph1 || (
+              <>
+                Our removable insulation jackets are engineered to reduce heat
+                loss, improve industrial energy efficiency, and enhance worker
+                safety by covering high-temperature equipment surfaces.
+              </>
+            )}
           </p>
 
           <p className="text-gray-400 leading-relaxed mb-8">
-            {seoData?.paragraph2 ||
+            {intro?.paragraph2 ||
               "Designed for power plants, refineries, chemical industries, and manufacturing systems, these reusable jackets lower operating costs while simplifying maintenance access."}
           </p>
 
           {/* BENEFITS */}
           <div className="grid sm:grid-cols-2 gap-4 mb-8">
-            {(seoData?.benefits || [
+            {(intro?.benefits || [
               "Reduce heat loss",
               "Improve energy efficiency",
               "Reusable & removable",
@@ -153,14 +160,14 @@ export default function IntroSection({ seoData = null }) {
             </h3>
 
             <p className="text-gray-400 leading-relaxed">
-              {seoData?.applications ||
+              {intro?.applications ||
                 "Ideal for valves, flanges, pumps, turbines, compressors, generators, exhaust systems, pipelines, and industrial machinery."}
             </p>
           </div>
 
           <a
-            href="/learn-more"
-            className="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-orange-500 text-white font-semibold hover:bg-orange-600 transition"
+            href="learn-more"
+            className="btn-primary w-full text-center block mt-4"
           >
             Learn More About Our Insulation Jackets
           </a>
@@ -171,10 +178,7 @@ export default function IntroSection({ seoData = null }) {
           <div className="relative overflow-hidden rounded-2xl shadow-2xl">
             <Image
               src={seoData?.image || "/img/insulation-jacket.jpg"}
-              alt={
-                seoData?.heading ||
-                "High-temperature removable insulation jacket"
-              }
+              alt={intro?.heading || "Insulation Jacket"}
               width={700}
               height={500}
               className="w-full h-auto object-contain"
@@ -188,11 +192,11 @@ export default function IntroSection({ seoData = null }) {
           {/* ENERGY SAVING CARD */}
           <div className="mt-6 bg-black/60 backdrop-blur-md rounded-xl shadow-xl p-5 border border-white/10">
             <h3 className="text-lg font-bold text-white">
-              {seoData?.cardTitle || "Energy-Saving Performance"}
+              {intro?.cardTitle || "Energy-Saving Performance"}
             </h3>
 
             <p className="text-sm text-gray-300 mt-2">
-              {seoData?.cardText ||
+              {intro?.cardText ||
                 "Supports reduced thermal energy loss, lower fuel consumption, and long-term operational savings."}
             </p>
           </div>

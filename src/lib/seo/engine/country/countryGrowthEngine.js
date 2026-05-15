@@ -1,8 +1,8 @@
 // /home/shahrukh-eng/marketing-proj/src/lib/seo/engine/country/countryGrowthEngine.js
 
+// /home/shahrukh-eng/marketing-proj/src/lib/seo/engine/country/countryGrowthEngine.js
 
 export function generateCountryGrowthSection(country, keyword) {
-
   const growthMap = {
     germany: "advanced automotive manufacturing and precision engineering industries",
     france: "nuclear energy, aerospace and refinery systems",
@@ -16,19 +16,20 @@ export function generateCountryGrowthSection(country, keyword) {
   };
 
   const base =
-    growthMap[country.slug] ||
+    growthMap[country.slug?.toLowerCase()] ||
     "diverse industrial manufacturing and energy systems";
+
+  const safeKeyword = keyword || "thermal insulation";
 
   return {
     title: `Industrial Growth in ${country.name}`,
 
-    subtitle:
-      `Industrial growth and thermal efficiency across ${country.name} manufacturing ecosystem`,
+    subtitle: `Industrial expansion and energy optimization across ${country.name}`,
 
     content: [
       `${country.name} has a rapidly evolving industrial base driven by ${base}.`,
-      `The demand for ${keyword} insulation systems is increasing due to energy efficiency regulations and operational safety requirements.`,
-      `Modern industries in ${country.name} are adopting advanced thermal insulation solutions to reduce energy loss and improve long-term performance.`,
+      `Demand for ${safeKeyword} systems is increasing due to strict energy efficiency standards and operational safety requirements.`,
+      `Modern industries in ${country.name} are adopting advanced insulation technologies to reduce energy loss and improve system performance.`,
     ],
   };
 }

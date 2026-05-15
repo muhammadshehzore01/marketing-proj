@@ -1,17 +1,21 @@
-// marketing-proj/src/lib/seo/engine/shared/heroEngin.js
+// marketing-proj/src/lib/seo/engine/shared/heroEngine.js
 // marketing-proj/src/lib/seo/engine/shared/heroEngine.js
 
 import { getSeoSeed } from "./seedEngine";
+import {
+  buildCountryRelatedKeywords,
+  buildCityRelatedKeywords,
+} from "@/lib/data/shared/keywordPool";
 
 function clean(text) {
   return text?.replace(/\s+/g, " ").trim() || "";
 }
 
 function pick(arr, seed, offset = 0) {
-  return arr[Math.abs(seed + offset) % arr.length];
+  if (!arr?.length) return "";
+  const index = Math.abs(seed + offset) % arr.length;
+  return arr[index];
 }
-
-/* ================= COUNTRY-SPECIFIC INDUSTRY MAP ================= */
 
 const countryIndustryMap = {
   germany: ["automotive engineering", "precision manufacturing", "industrial robotics"],
@@ -23,8 +27,7 @@ const countryIndustryMap = {
   sweden: ["green energy", "advanced manufacturing", "thermal systems"],
   norway: ["oil and gas", "offshore engineering", "energy infrastructure"],
   denmark: ["wind energy", "power generation", "industrial equipment"],
-  austria: ["machine engineering", "production systems", "industrial plants"],
-  poland: ["heavy industry", "manufacturing", "industrial modernization"],
+  "united-kingdom": ["oil and gas", "marine engineering", "power generation"],
   default: ["industrial manufacturing", "energy systems", "process engineering"],
 };
 
@@ -39,6 +42,7 @@ const equipmentMap = {
   "marine engineering": ["pipe systems", "engine units", "marine valves"],
   "oil and gas": ["valves", "refinery units", "pipelines"],
   "wind energy": ["turbines", "gearboxes", "power units"],
+  "power generation": ["turbines", "generators", "steam systems"],
   default: ["industrial equipment", "process systems", "critical assets"],
 };
 
@@ -52,76 +56,55 @@ const benefits = [
   "protect critical equipment",
 ];
 
-/* ================= TITLE TEMPLATES ================= */
-
-const countryTitleTemplates = [
-  (c) => `Removable Insulation Jackets in ${c}`,
-  (c) => `Industrial Thermal Solutions for ${c}`,
-  (c) => `Energy Saving Insulation Systems in ${c}`,
-  (c) => `Custom Insulation Engineering in ${c}`,
-  (c) => `Industrial Heat Protection Solutions in ${c}`,
-];
-
-const cityTitleTemplates = [
-  (city, country) => `Insulation Jackets in ${city}, ${country}`,
-  (city) => `Industrial Insulation Solutions in ${city}`,
-  (city) => `Thermal Protection Systems in ${city}`,
-  (city) => `Custom Heat Insulation in ${city}`,
-];
-
-/* ================= SUBTITLE TEMPLATES ================= */
-
 const subtitleTemplates = [
-  (country, ind, eq, ben) =>
-    `${country} industries depend on ${ind}, where ${eq} require advanced insulation systems to ${ben}.`,
+  (country, keyword, ind, eq, ben) =>
+    `${country} industries use ${keyword} for ${eq} in ${ind} to ${ben}, improve safety, and support energy-efficient plant operation.`,
 
-  (country, ind, eq, ben) =>
-    `Across ${country}, removable insulation jackets help protect ${eq} used in ${ind} applications to ${ben}.`,
+  (country, keyword, ind, eq, ben) =>
+    `Across ${country}, ${keyword} help protect ${eq}, reduce thermal loss, and improve maintenance access for ${ind} facilities.`,
 
-  (country, ind, eq, ben) =>
-    `${country}'s ${ind} sector uses thermal insulation solutions for ${eq} to ${ben}.`,
+  (country, keyword, ind, eq, ben) =>
+    `${keyword} in ${country} are engineered for ${ind} operations where ${eq} require reliable heat protection to ${ben}.`,
 
-  (country, ind, eq, ben) =>
-    `High-performance insulation jackets in ${country} improve reliability of ${eq} across ${ind}.`,
+  (country, keyword, ind, eq, ben) =>
+    `Industrial buyers in ${country} use custom ${keyword} to protect ${eq}, lower operating costs, and improve thermal performance across ${ind}.`,
 ];
 
-/* ================= COUNTRY HERO ================= */
+function pickPrimaryKeyword(keywords = [], seed = 0, fallback = "") {
+  if (!keywords.length) return fallback;
+  return pick(keywords, seed, 5) || fallback;
+}
 
 export function generateCountryHero(country) {
   if (!country) return null;
 
-  // stronger unique seed
   const { seed } = getSeoSeed(
-    `${country.slug}-${country.name.length}-hero-v3`,
+    `hero-country-${country.slug}-${country.name}`,
     "hero-country"
   );
 
-  const title = pick(countryTitleTemplates, seed)(country.name);
+  const keywords = buildCountryRelatedKeywords(country);
+  const primaryKeyword = pickPrimaryKeyword(
+    keywords,
+    seed,
+    `Industrial Insulation Jackets in ${country.name}`
+  );
 
   const industries =
     countryIndustryMap[country.slug?.toLowerCase()] ||
     countryIndustryMap.default;
 
   const industry = pick(industries, seed, 1);
-
-  const eq = pick(
-    equipmentMap[industry] || equipmentMap.default,
-    seed,
-    2
-  );
-
+  const eq = pick(equipmentMap[industry] || equipmentMap.default, seed, 2);
   const ben = pick(benefits, seed, 3);
-
-  const subtitle = pick(
-    subtitleTemplates,
-    seed,
-    4
-  )(country.name, industry, eq, ben);
+  const subtitleFn = pick(subtitleTemplates, seed);
 
   return {
-    title: clean(title),
+    title: clean(primaryKeyword),
     overview: {
-      content: [clean(subtitle)],
+      content: [
+        clean(subtitleFn(country.name, primaryKeyword, industry, eq, ben)),
+      ],
     },
     country: {
       slug: country.slug,
@@ -131,41 +114,40 @@ export function generateCountryHero(country) {
   };
 }
 
-/* ================= CITY HERO ================= */
-
 export function generateCityHero(city, country) {
   if (!city || !country) return null;
 
   const { seed } = getSeoSeed(
-    `${city.name}-${country.slug}-hero-city-v3`,
+    `hero-city-${country.slug}-${city.name}-${city.display}`,
     "hero-city"
   );
 
-  const title = pick(
-    cityTitleTemplates,
-    seed
-  )(city.display, country.name);
+  const keywords = buildCityRelatedKeywords(city, country);
+  const primaryKeyword = pickPrimaryKeyword(
+    keywords,
+    seed,
+    `Industrial Insulation Jackets in ${city.display}, ${country.name}`
+  );
 
   const industries =
     countryIndustryMap[country.slug?.toLowerCase()] ||
     countryIndustryMap.default;
 
   const industry = pick(industries, seed, 1);
-
-  const eq = pick(
-    equipmentMap[industry] || equipmentMap.default,
-    seed,
-    2
-  );
-
+  const eq = pick(equipmentMap[industry] || equipmentMap.default, seed, 2);
   const ben = pick(benefits, seed, 3);
 
-  const subtitle = `${city.display} is an important industrial center in ${country.name}, where ${eq} in ${industry} facilities require insulation solutions to ${ben}.`;
+  const subtitleVariants = [
+    `${primaryKeyword} are used by industrial facilities in ${city.display}, ${country.name} to protect ${eq}, reduce heat loss, and improve safety in ${industry}.`,
+    `Industrial buyers in ${city.display} use ${primaryKeyword} for ${eq} where energy saving, maintenance access, and thermal protection are required.`,
+    `${city.display} industries rely on ${primaryKeyword} to improve efficiency, lower operating costs, and protect high-temperature ${eq}.`,
+    `For ${industry} operations in ${city.display}, ${primaryKeyword} support heat loss reduction, worker safety, and reliable equipment performance.`,
+  ];
 
   return {
-    title: clean(title),
+    title: clean(primaryKeyword),
     overview: {
-      content: [clean(subtitle)],
+      content: [clean(pick(subtitleVariants, seed))],
     },
     country: {
       slug: country.slug,

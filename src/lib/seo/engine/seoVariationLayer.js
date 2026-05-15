@@ -2,7 +2,7 @@
 🌍 SEO VARIATION LAYER (CLEAN ARCHITECTURE v2)
 marketing-proj/src/lib/seo/engine/seoVariationLayer.js
 =====/* =====================================================
-🌍 SEO VARIATION LAYER (CLEAN ARCHITECTURE v2 - FIXED PATHS)
+🌍 SEO VARIATION LAYER (CLEAN ARCHITECTURE v2 
 ===================================================== */
 
 /* =====================================================

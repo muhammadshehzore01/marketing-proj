@@ -1,51 +1,41 @@
-// /src/lib/seo/engine/shared/introSeoEngine.js
-
 import { getSeoSeed } from "./seedEngine";
 
 function clean(text) {
   return text?.replace(/\s+/g, " ").trim() || "";
 }
 
-function pick(arr, seed, offset = 0) {
-  return arr[Math.abs(seed + offset) % arr.length];
+function hash(str) {
+  return str
+    .split("")
+    .reduce((a, b) => (a * 31 + b.charCodeAt(0)) >>> 0, 0);
 }
 
-/* =====================================================
-   DATA POOLS
-===================================================== */
+function pick(arr, seed, offset = 0) {
+  const base = typeof seed === "number" ? seed : hash(seed);
+  return arr[Math.abs(base + offset * 13) % arr.length];
+}
 
 const labels = [
   "Industrial Energy Saving Solutions",
   "Advanced Thermal Protection Systems",
   "High-Temperature Equipment Insulation",
   "Industrial Heat Loss Reduction",
-  "Thermal Efficiency Engineering",
-  "Industrial Process Optimization",
 ];
 
 const headings = [
   "High-Temperature Removable Insulation Jackets",
-  "Custom Removable Thermal Insulation Covers",
-  "Industrial Energy Saving Insulation Jackets",
-  "Advanced Thermal Protection Jackets",
-  "Reusable Insulation Jackets for Industrial Equipment",
+  "Custom Thermal Protection Covers for Industry",
+  "Energy Efficient Industrial Insulation Systems",
+  "Reusable Insulation Jackets for Heavy Equipment",
 ];
 
-const industryPool = [
-  "advanced manufacturing",
-  "chemical processing",
-  "oil and gas operations",
-  "power generation",
-  "food processing",
-  "pharmaceutical production",
-  "marine engineering",
-  "heavy industrial systems",
-  "automation engineering",
-  "energy infrastructure",
-  "precision machinery",
-  "industrial robotics",
-  "thermal processing",
-  "refinery operations",
+const benefitsPool = [
+  "Reduce heat loss",
+  "Improve energy efficiency",
+  "Reusable & removable",
+  "Worker safety protection",
+  "Lower maintenance downtime",
+  "Long-term cost savings",
 ];
 
 const equipmentPool = [
@@ -55,177 +45,101 @@ const equipmentPool = [
   "boilers",
   "heat exchangers",
   "compressors",
-  "generators",
-  "exhaust systems",
   "pipelines",
-  "industrial machinery",
-  "storage tanks",
-  "reactors",
 ];
 
-const benefitsPool = [
-  "Reduce heat loss",
-  "Improve energy efficiency",
-  "Reusable & removable",
-  "Worker safety protection",
-  "Lower maintenance downtime",
-  "Reduce fuel consumption",
-  "Improve thermal stability",
-  "Long-term cost savings",
-  "Easy access for maintenance",
-  "Support sustainability goals",
+const introStyles = [
+  (loc, ind) =>
+    `Industrial facilities in ${loc} operating within the ${ind} sector use removable insulation systems to control heat loss, improve safety, and reduce energy waste.`,
+
+  (loc, ind) =>
+    `The ${ind} sector in ${loc} depends on reliable thermal insulation to protect high-temperature equipment and improve plant efficiency.`,
+
+  (loc, ind) =>
+    `Across ${loc}, industrial plants in the ${ind} sector require removable insulation jackets for safer, cleaner, and more energy-efficient operations.`,
+
+  (loc, ind) =>
+    `In ${loc}, high-temperature industrial equipment used in ${ind} requires engineered insulation systems to reduce heat radiation and support maintenance access.`,
+
+  (loc, ind) =>
+    `${loc} supports important ${ind} operations where removable thermal covers help reduce operating cost, improve safety, and protect critical equipment.`,
 ];
 
-const paragraph1Templates = [
-  (location, industry) =>
-    `Industrial facilities in ${location} rely on removable insulation jackets to improve thermal performance across ${industry}.`,
+const paragraph2Styles = [
+  (e1, e2, e3) =>
+    `These systems are commonly installed on ${e1}, ${e2}, and ${e3}, helping facilities maintain safer working conditions and better thermal stability.`,
 
-  (location, industry) =>
-    `${location} industries use advanced removable insulation systems to reduce energy loss in ${industry}.`,
+  (e1, e2, e3) =>
+    `Equipment such as ${e1}, ${e2}, and ${e3} benefits from reusable insulation that can be removed during inspection and installed again without waste.`,
 
-  (location, industry) =>
-    `Designed for demanding environments in ${location}, our insulation jackets improve efficiency in ${industry}.`,
+  (e1, e2, e3) =>
+    `By insulating ${e1}, ${e2}, and ${e3}, industries can reduce surface heat, improve energy performance, and protect maintenance teams.`,
 
-  (location, industry) =>
-    `Thermal insulation solutions in ${location} help industrial operators optimize ${industry} performance.`,
+  (e1, e2, e3) =>
+    `Our removable insulation covers are suitable for ${e1}, ${e2}, ${e3}, and other equipment exposed to continuous high-temperature operation.`,
 ];
 
-const paragraph2Templates = [
-  (eq1, eq2, eq3) =>
-    `Custom removable insulation protects ${eq1}, ${eq2}, and ${eq3}, reducing maintenance costs and improving safety.`,
+function buildIntro(location, seed, type = "country", industry = "industrial processing") {
+  const mixSeed =
+    typeof seed === "number"
+      ? seed + location.length
+      : hash(seed) + location.length;
 
-  (eq1, eq2, eq3) =>
-    `These reusable systems help insulate ${eq1}, ${eq2}, and ${eq3} while improving equipment reliability.`,
+  const eq1 = pick(equipmentPool, mixSeed, 1);
+  const eq2 = pick(equipmentPool, mixSeed, 2);
+  const eq3 = pick(equipmentPool, mixSeed, 3);
 
-  (eq1, eq2, eq3) =>
-    `Engineered for durability, insulation jackets support ${eq1}, ${eq2}, and ${eq3} in high-temperature environments.`,
+  return {
+    label: clean(pick(labels, mixSeed)),
+    heading: clean(pick(headings, mixSeed, 1)),
 
-  (eq1, eq2, eq3) =>
-    `Our insulation covers reduce heat loss on ${eq1}, ${eq2}, and ${eq3}, supporting long-term efficiency.`,
-];
+    paragraph1: clean(pick(introStyles, mixSeed, 2)(location, industry)),
+    paragraph2: clean(pick(paragraph2Styles, mixSeed, 3)(eq1, eq2, eq3)),
 
-const applicationsTemplates = [
-  (a, b, c) =>
-    `Ideal for ${a}, ${b}, ${c}, and other high-temperature industrial equipment.`,
+    benefits: [
+      pick(benefitsPool, mixSeed, 1),
+      pick(benefitsPool, mixSeed, 2),
+      pick(benefitsPool, mixSeed, 3),
+      pick(benefitsPool, mixSeed, 4),
+    ],
 
-  (a, b, c) =>
-    `Designed for insulation of ${a}, ${b}, and ${c} across demanding industrial environments.`,
+    applications: `Ideal for ${eq1}, ${eq2}, ${eq3}, and other high-temperature industrial systems.`,
 
-  (a, b, c) =>
-    `Commonly installed on ${a}, ${b}, and ${c} where thermal efficiency is critical.`,
-];
-
-/* =====================================================
-   COUNTRY INTRO
-===================================================== */
+    type,
+  };
+}
 
 export function generateCountryIntro(country) {
   if (!country) return null;
 
   const { seed } = getSeoSeed(
-    `${country.slug}-${country.name}-intro-v4`,
+    `intro-country-${country.slug}-${country.name}-${country.cities?.length || 0}`,
     "intro-country"
   );
 
-  const label = pick(labels, seed);
-  const heading = pick(headings, seed, 1);
+  const industry =
+    country.industries?.[0] ||
+    "industrial processing";
 
-  const industry = pick(industryPool, seed, 2);
-
-  const eq1 = pick(equipmentPool, seed, 3);
-  const eq2 = pick(equipmentPool, seed, 4);
-  const eq3 = pick(equipmentPool, seed, 5);
-
-  const benefits = [
-    pick(benefitsPool, seed, 6),
-    pick(benefitsPool, seed, 7),
-    pick(benefitsPool, seed, 8),
-    pick(benefitsPool, seed, 9),
-  ];
-
-  const paragraph1 = pick(
-    paragraph1Templates,
-    seed,
-    10
-  )(country.name, industry);
-
-  const paragraph2 = pick(
-    paragraph2Templates,
-    seed,
-    11
-  )(eq1, eq2, eq3);
-
-  const applications = pick(
-    applicationsTemplates,
-    seed,
-    12
-  )(eq1, eq2, eq3);
-
-  return {
-    label: clean(label),
-    heading: clean(heading),
-    paragraph1: clean(paragraph1),
-    paragraph2: clean(paragraph2),
-    benefits,
-    applications: clean(applications),
-    country: country.slug,
-  };
+  return buildIntro(country.name, seed, "country", industry);
 }
-
-/* =====================================================
-   CITY INTRO
-===================================================== */
 
 export function generateCityIntro(city, country) {
   if (!city || !country) return null;
 
   const { seed } = getSeoSeed(
-    `${city.name}-${country.slug}-${city.display}-intro-v4`,
+    `intro-city-${country.slug}-${city.name}-${city.display}`,
     "intro-city"
   );
 
-  const label = pick(labels, seed);
-  const heading = pick(headings, seed, 1);
+  const industry =
+    country.industries?.[0] ||
+    "industrial processing";
 
-  const industry = pick(industryPool, seed, 2);
-
-  const eq1 = pick(equipmentPool, seed, 3);
-  const eq2 = pick(equipmentPool, seed, 4);
-  const eq3 = pick(equipmentPool, seed, 5);
-
-  const benefits = [
-    pick(benefitsPool, seed, 6),
-    pick(benefitsPool, seed, 7),
-    pick(benefitsPool, seed, 8),
-    pick(benefitsPool, seed, 9),
-  ];
-
-  const paragraph1 = pick(
-    paragraph1Templates,
+  return buildIntro(
+    `${city.display}, ${country.name}`,
     seed,
-    10
-  )(`${city.display}, ${country.name}`, industry);
-
-  const paragraph2 = pick(
-    paragraph2Templates,
-    seed,
-    11
-  )(eq1, eq2, eq3);
-
-  const applications = pick(
-    applicationsTemplates,
-    seed,
-    12
-  )(eq1, eq2, eq3);
-
-  return {
-    label: clean(label),
-    heading: clean(heading),
-    paragraph1: clean(paragraph1),
-    paragraph2: clean(paragraph2),
-    benefits,
-    applications: clean(applications),
-    city: city.name,
-    country: country.slug,
-  };
+    "city",
+    industry
+  );
 }

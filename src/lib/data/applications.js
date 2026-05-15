@@ -11,7 +11,7 @@ export const applications = [
         heading: "Heat Loss Problem in Industrial Valves",
         image: "/img/applications/valve-problem.webp",
         text:
-          "Industrial valves are one of the most common sources of exposed heat loss in steam and process systems. Because valve bodies, bonnets, and actuated assemblies have irregular shapes, standard pipe insulation often leaves gaps. These exposed areas increase fuel consumption, raise ambient temperature, and create burn hazards for operators.",
+          "Industrial valves are one of the most comamon sources of exposed heat loss in steam and process systems. Because valve bodies, bonnets, and actuated assemblies have irregular shapes, standard pipe insulation often leaves gaps. These exposed areas increase fuel consumption, raise ambient temperature, and create burn hazards for operators.",
         points: [
           "High surface temperature around valve body",
           "Continuous radiant heat loss",

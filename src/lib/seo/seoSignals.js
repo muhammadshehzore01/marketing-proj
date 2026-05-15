@@ -1,27 +1,36 @@
-/* =====================================================
-   🚀 SEO SIGNALS BRIDGE (STEP 9 FINAL ALIGNMENT LAYER)
-   /home/shahrukh-eng/marketing-proj/src/lib/seo/seoSignals.js
-   SINGLE SOURCE OF TRUTH FOR SITEMAP + INDEXING
-===================================================== */
-
+import { getSeoBrainSignals } from "./engine/seoRankingBrain";
 import { getIndexPriority } from "./engine/seoRankingLayer";
 
 /* =====================================================
-   🔥 SEO SIGNAL BUILDER (SMART + CONSISTENT)
+   🚀 SINGLE SOURCE SEO SIGNAL ENGINE (FIXED)
 ===================================================== */
-export function buildSeoSignals(type = "city", depth = 1) {
+
+export function buildSeoSignals(type = "city", depth = 1, context = {}) {
+  const brain = getSeoBrainSignals(context || {});
+
+  const basePriority = getIndexPriority({ type, depth });
+
+  const finalPriority = Math.min(
+    0.95,
+    Math.max(0.4, (brain.score || 50) / 100)
+  );
+
   return {
     index: "true",
     follow: "true",
 
-    // 🔥 NOW POWERED BY RANKING ENGINE (NO HARDCODE)
-    priority: getIndexPriority({ type, depth }),
+    // 🔥 HYBRID PRIORITY (STATIC + AI BRAIN)
+    priority: Number(((basePriority + finalPriority) / 2).toFixed(2)),
 
     changefreq:
       type === "country"
-        ? "weekly"
+        ? brain.level === "HIGH"
+          ? "weekly"
+          : "monthly"
         : type === "city"
-        ? "weekly"
+        ? brain.level === "HIGH"
+          ? "daily"
+          : "weekly"
         : "monthly",
   };
 }

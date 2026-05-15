@@ -1,4 +1,5 @@
 // /home/shahrukh-eng/marketing-proj/next.config.mjs
+// /home/shahrukh-eng/marketing-proj/next.config.mjs
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {

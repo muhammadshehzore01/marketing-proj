@@ -9,7 +9,23 @@ import { Autoplay } from "swiper/modules";
 
 import "swiper/css";
 
-export default function IndustriesLinks() {
+export default function IndustriesLinks({
+  label = "Industries We Serve",
+  title = "Industrial Thermal Insulation Solutions for Multiple Industries",
+  description = "We manufacture removable thermal insulation covers for industrial equipment operating in high-temperature environments including power plants, oil & gas facilities, petrochemical plants, fertilizer plants, textile mills, marine systems, and industrial utility applications.",
+  buttonText = "View All Industries",
+  seoContent = null,
+}) {
+  const finalLabel = seoContent?.label || label;
+  const finalTitle = seoContent?.title || title;
+  const finalDescription = seoContent?.description || description;
+  const finalButtonText = seoContent?.buttonText || buttonText;
+
+  const sourceIndustries =
+    seoContent?.featuredIndustries?.length > 0
+      ? seoContent.featuredIndustries
+      : industries;
+
   return (
     <section className="section bg-secondary overflow-hidden">
       <div className="container">
@@ -24,24 +40,32 @@ export default function IndustriesLinks() {
                 letterSpacing: "0.08em",
               }}
             >
-              Industries We Serve
+              {finalLabel}
             </p>
 
-            <h2>
-              Industrial Thermal Insulation Solutions for Multiple Industries
-            </h2>
+            <h2>{finalTitle}</h2>
 
-            <p className="mt-6">
-              We manufacture removable thermal insulation covers for industrial
-              equipment operating in high-temperature environments including
-              power plants, oil & gas facilities, petrochemical plants,
-              fertilizer plants, textile mills, marine systems, and industrial
-              utility applications.
-            </p>
+            <p className="mt-6">{finalDescription}</p>
+
+            {seoContent?.ctaText && (
+              <p
+                className="mt-4"
+                style={{
+                  color: "var(--accent)",
+                  fontWeight: 700,
+                }}
+              >
+                {seoContent.ctaText}
+              </p>
+            )}
           </div>
 
-          <Link href="/industries" className="btn-primary">
-            View All Industries
+          <Link
+            href="/industries"
+            className="btn-primary"
+            aria-label={`${finalButtonText} for industrial insulation applications`}
+          >
+            {finalButtonText}
           </Link>
         </div>
 
@@ -65,16 +89,17 @@ export default function IndustriesLinks() {
             }}
             className="industries-swiper"
           >
-            {industries.map((industry, index) => (
+            {sourceIndustries.map((industry, index) => (
               <SwiperSlide key={industry.slug}>
                 <Link
                   href={`/industries/${industry.slug}`}
                   className="glass-card overflow-hidden no-underline group h-full block"
+                  aria-label={`Explore ${industry.pageTitle} for industrial insulation applications`}
                 >
                   <div className="relative h-56 overflow-hidden">
                     <Image
-                      src={industry.image}
-                      alt={industry.heroTitle}
+                      src={industry.detailImage}
+                      alt={industry.heroTitle || industry.pageTitle}
                       fill
                       loading={index < 4 ? "eager" : "lazy"}
                       priority={index < 2}
@@ -116,7 +141,6 @@ export default function IndustriesLinks() {
               </SwiperSlide>
             ))}
           </Swiper>
-        
         </div>
       </div>
     </section>

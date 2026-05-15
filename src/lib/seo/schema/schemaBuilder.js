@@ -1,30 +1,40 @@
-// marketing-proj/src/lib/seo/schema/schemaBuilder.js
 /* =====================================================
-   🚀 SCHEMA FUSION ENGINE (STEP 10 CORE SYSTEM)
-   FAQ + Breadcrumb + Organization + Product (AUTO SEO)
+🔥 FINAL SCHEMA BUILDER
+src/lib/seo/schema/schemaBuilder.js
 ===================================================== */
 
 import { buildSeoSignals } from "../seoSignals";
 
 /* =====================================================
-   🔥 BREADCRUMB SCHEMA
+   BREADCRUMB
 ===================================================== */
-export function buildBreadcrumbSchema({ country, city }) {
+
+export function buildBreadcrumbSchema({
+  country,
+  city,
+}) {
   const items = [
     {
+      "@type": "ListItem",
       position: 1,
       name: "Home",
-      item: "https://mshahrukhengineeringworks.com",
+      item:
+        "https://mshahrukhengineeringworks.com",
     },
+
     {
+      "@type": "ListItem",
       position: 2,
-      name: "Removable Insulation Jackets",
-      item: "https://mshahrukhengineeringworks.com/removable-insulation-jackets",
+      name:
+        "Removable Insulation Jackets",
+      item:
+        "https://mshahrukhengineeringworks.com/removable-insulation-jackets",
     },
   ];
 
   if (country) {
     items.push({
+      "@type": "ListItem",
       position: 3,
       name: country.name,
       item: `https://mshahrukhengineeringworks.com/removable-insulation-jackets/${country.slug}`,
@@ -33,6 +43,7 @@ export function buildBreadcrumbSchema({ country, city }) {
 
   if (city && country) {
     items.push({
+      "@type": "ListItem",
       position: 4,
       name: city.display,
       item: `https://mshahrukhengineeringworks.com/removable-insulation-jackets/${country.slug}/${city.name}`,
@@ -40,126 +51,208 @@ export function buildBreadcrumbSchema({ country, city }) {
   }
 
   return {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
+    "@context":
+      "https://schema.org",
+    "@type":
+      "BreadcrumbList",
     itemListElement: items,
   };
 }
 
 /* =====================================================
-   🔥 FAQ SCHEMA BUILDER
+   FAQ
 ===================================================== */
-export function buildFaqSchema(faq = []) {
-  if (!faq.length) return null;
+
+export function buildFaqSchema(
+  faq = []
+) {
+  if (!faq.length)
+    return null;
 
   return {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: faq.map((f) => ({
-      "@type": "Question",
-      name: f.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: f.answer,
-      },
-    })),
+    "@context":
+      "https://schema.org",
+
+    "@type":
+      "FAQPage",
+
+    mainEntity:
+      faq.map((f) => ({
+        "@type":
+          "Question",
+
+        name:
+          f.question,
+
+        acceptedAnswer:
+          {
+            "@type":
+              "Answer",
+
+            text:
+              f.answer,
+          },
+      })),
   };
 }
 
 /* =====================================================
-   🔥 ORGANIZATION SCHEMA (GLOBAL AUTHORITY BOOST)
+   ORGANIZATION
 ===================================================== */
+
 export function buildOrganizationSchema() {
   return {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: "M. Shahrukh Engineering Works",
-    url: "https://mshahrukhengineeringworks.com",
+    "@context":
+      "https://schema.org",
+
+    "@type":
+      "Organization",
+
+    name:
+      "M. Shahrukh Engineering Works",
+
+    url:
+      "https://mshahrukhengineeringworks.com",
+
     description:
       "Industrial insulation jackets manufacturer for valves, turbines, pumps and industrial systems.",
   };
 }
 
 /* =====================================================
-   🔥 PRODUCT SCHEMA (BASIC SEO POWER BOOST)
+   PRODUCT
 ===================================================== */
-export function buildProductSchema({ country, city }) {
-  const place = city ? city.display : country?.name;
+
+export function buildProductSchema({
+  country,
+  city,
+}) {
+  const place =
+    city?.display ||
+    country?.name ||
+    "Industrial";
 
   return {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: `Industrial Insulation Jackets in ${place}`,
+    "@context":
+      "https://schema.org",
+
+    "@type":
+      "Product",
+
+    name:
+      `Industrial Insulation Jackets in ${place}`,
+
     description:
       "High-performance removable insulation jackets for industrial equipment.",
+
     brand: {
-      "@type": "Brand",
-      name: "MSEW",
+      "@type":
+        "Brand",
+
+      name:
+        "MSEW",
     },
+
+    category:
+      "Industrial Insulation",
   };
 }
 
 /* =====================================================
-   🔥 MAIN SCHEMA FUSION ENGINE (ONE CALL = ALL SCHEMAS)
+   MAIN
 ===================================================== */
-export function buildFullSchema({ country, city, faq = [] }) {
-  const signals = buildSeoSignals(city ? "city" : "country", city ? 2 : 1);
 
-  const schema = {
-    "@context": "https://schema.org",
+export function buildFullSchema({
+  country,
+  city,
+  faq = [],
+}) {
+  const signals =
+    buildSeoSignals(
+      city
+        ? "city"
+        : "country",
+      city ? 2 : 1
+    );
 
-    /* ---------------------------
-       CORE ENTITY
-    ---------------------------- */
-    "@type": "WebPage",
+  return {
+    "@context":
+      "https://schema.org",
 
-    /* ---------------------------
-       SEO SIGNALS (INDEX CONTROL)
-    ---------------------------- */
-    inLanguage: "en",
+    "@type":
+      "WebPage",
+
+    inLanguage:
+      "en",
+
     isPartOf: {
-      "@type": "WebSite",
-      name: "MSEW",
-      url: "https://mshahrukhengineeringworks.com",
+      "@type":
+        "WebSite",
+
+      name:
+        "MSEW",
+
+      url:
+        "https://mshahrukhengineeringworks.com",
     },
 
-    /* ---------------------------
-       EMBEDDED SCHEMAS
-    ---------------------------- */
-    breadcrumb: buildBreadcrumbSchema({ country, city }),
+    breadcrumb:
+      buildBreadcrumbSchema({
+        country,
+        city,
+      }),
 
-    ...(faq.length ? { mainEntity: buildFaqSchema(faq).mainEntity } : {}),
-
-    /* ---------------------------
-       OPTIONAL BOOST SCHEMAS
-    ---------------------------- */
-    publisher: buildOrganizationSchema(),
-
-    ...(city || country
-      ? { about: buildProductSchema({ country, city }) }
+    ...(faq.length
+      ? {
+          mainEntity:
+            buildFaqSchema(
+              faq
+            ).mainEntity,
+        }
       : {}),
 
-    /* ---------------------------
-       SEO SIGNALS (FOR DEBUG + ALIGNMENT)
-    ---------------------------- */
+    publisher:
+      buildOrganizationSchema(),
+
+    about:
+      buildProductSchema({
+        country,
+        city,
+      }),
+
     additionalProperty: [
       {
-        "@type": "PropertyValue",
-        name: "priority",
-        value: signals.priority,
+        "@type":
+          "PropertyValue",
+
+        name:
+          "priority",
+
+        value:
+          signals.priority,
       },
+
       {
-        "@type": "PropertyValue",
-        name: "index",
-        value: signals.index,
+        "@type":
+          "PropertyValue",
+
+        name:
+          "index",
+
+        value:
+          signals.index,
       },
+
       {
-        "@type": "PropertyValue",
-        name: "follow",
-        value: signals.follow,
+        "@type":
+          "PropertyValue",
+
+        name:
+          "follow",
+
+        value:
+          signals.follow,
       },
     ],
   };
-
-  return schema;
 }

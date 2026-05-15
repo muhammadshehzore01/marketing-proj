@@ -8,23 +8,52 @@ import { MapPin, Phone, Facebook, Linkedin, Instagram, Mail } from "lucide-react
 
 const FOOTER_SERVICES_LIMIT = 5;
 
+const fallbackServices = [
+  {
+    name: "Metallic Expansion Bellows Manufacturer in Pakistan",
+    slug: "metallic-expansion-bellows-manufacturer-pakistan",
+  },
+  {
+    name: "Removable Insulation Jackets Manufacturer in Pakistan",
+    slug: "removable-insulation-jackets-manufacturer-pakistan",
+  },
+  {
+    name: "Rubber Expansion Bellows in Pakistan",
+    slug: "rubber-expansion-bellows-pakistan",
+  },
+  {
+    name: "Site Measurement & Installation Support",
+    slug: "site-measurement-installation-support",
+  },
+  {
+    name: "Thermal Insulation Material Supply",
+    slug: "thermal-insulation-material-supply",
+  },
+];
+
 export default function Footer() {
   const [services, setServices] = useState([]);
 
   useEffect(() => {
-    fetchServices().then((data) => {
-      const footerServices = Array.isArray(data)
-        ? data.filter((s) => s?.show_in_footer === true && s?.slug)
-        : [];
-      setServices(footerServices);
-    });
+    fetchServices()
+      .then((data) => {
+        const footerServices = Array.isArray(data)
+          ? data.filter((s) => s?.show_in_footer === true && s?.slug)
+          : [];
+        setServices(footerServices);
+      })
+      .catch(() => {
+        setServices([]);
+      });
   }, []);
 
-  const top5FooterServices = useMemo(() => {
-    return services
+  const topFooterServices = useMemo(() => {
+    const dynamicServices = services
       .slice()
       .sort((a, b) => String(a?.name || "").localeCompare(String(b?.name || "")))
       .slice(0, FOOTER_SERVICES_LIMIT);
+
+    return dynamicServices.length ? dynamicServices : fallbackServices;
   }, [services]);
 
   return (
@@ -58,9 +87,9 @@ export default function Footer() {
           </div>
 
           <p className="text-sm mt-4 leading-relaxed" style={{ color: "var(--text-secondary)" }}>
-            High-temperature removable insulation jackets for valves, flanges, pumps, turbines,
-            and generators — designed to reduce heat loss, improve efficiency, and improve
-            workplace safety.
+            High-temperature removable insulation jackets for valves, flanges, pumps,
+            turbines, generators, and industrial equipment — engineered to reduce heat loss,
+            improve energy efficiency, and enhance workplace safety.
           </p>
 
           {/* Social */}
@@ -110,6 +139,8 @@ export default function Footer() {
               ["Home", "/"],
               ["About", "/about"],
               ["Products", "/products"],
+              ["Applications", "/applications"],
+              ["Industries", "/industries"],
               ["Blogs", "/blogs"],
               ["Contact", "/contact"],
             ].map(([label, href]) => (
@@ -131,20 +162,16 @@ export default function Footer() {
             Services
           </h3>
           <div className="space-y-2 text-sm">
-            {top5FooterServices.length ? (
-              top5FooterServices.map((srv) => (
-                <Link
-                  key={srv.slug}
-                  href={`/services/${srv.slug}`}
-                  className="block transition"
-                  style={{ color: "var(--text-secondary)" }}
-                >
-                  <span className="hover:text-[var(--accent)]">{srv.name}</span>
-                </Link>
-              ))
-            ) : (
-              <div style={{ color: "var(--text-secondary)" }}>No services available</div>
-            )}
+            {topFooterServices.map((srv) => (
+              <Link
+                key={srv.slug}
+                href={`/services/${srv.slug}`}
+                className="block transition"
+                style={{ color: "var(--text-secondary)" }}
+              >
+                <span className="hover:text-[var(--accent)]">{srv.name}</span>
+              </Link>
+            ))}
           </div>
         </div>
 
@@ -157,7 +184,7 @@ export default function Footer() {
           <div className="space-y-3 text-sm" style={{ color: "var(--text-secondary)" }}>
             <div className="flex items-start gap-2">
               <MapPin size={18} className="mt-0.5" style={{ color: "var(--accent)" }} />
-              <span>Plot #55-C, 15th Commercial St, DHA Phase-2, Karachi</span>
+              <span>Plot #55-C, 15th Commercial Street, DHA Phase-2 Extension, Karachi, Pakistan</span>
             </div>
 
             <div className="flex items-center gap-2">
@@ -170,8 +197,8 @@ export default function Footer() {
               <span>hellomsew@gmail.com</span>
             </div>
 
-            <Link href="/get-quote" className="btn-primary w-full mt-2">
-              Get Quote
+            <Link href="/get-quote" className="btn-primary w-full mt-2 text-center block">
+              Get Quick Quote
             </Link>
           </div>
         </div>
@@ -181,9 +208,11 @@ export default function Footer() {
       <div className="border-t" style={{ borderColor: "var(--border)" }}>
         <div className="max-w-7xl mx-auto px-6 py-4 text-xs flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-between">
           <span style={{ color: "var(--text-secondary)" }}>
-            © {new Date().getFullYear()} MSEW. All rights reserved.
+            © {new Date().getFullYear()} M. Shahrukh Engineering Works (MSEW). All rights reserved.
           </span>
-          <span style={{ color: "var(--text-secondary)" }}>mshahrukhengineeringworks.com</span>
+          <span style={{ color: "var(--text-secondary)" }}>
+            mshahrukhengineeringworks.com
+          </span>
         </div>
       </div>
     </footer>

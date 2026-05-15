@@ -1,75 +1,44 @@
-/* =====================================================
-    marketing-proj/src/lib/seo/engine/rankingBoost.js
-   🚀 PHASE 11: GOOGLE RANKING BOOST ENGINE
-   - CTR boost
-   - FAQ rich results
-   - keyword density control
-   - SEO structure optimization
-===================================================== */
+// /src/lib/seo/engine/rankingBoost.js
 
-/* =====================================================
-   🔥 FAQ GENERATOR (RICH RESULT BOOST)
-===================================================== */
+const faqTemplates = [
+  (place) => `Why are insulation jackets important in ${place}?`,
+  (place) => `How do removable insulation systems improve efficiency in ${place}?`,
+  (place) => `What industries in ${place} use thermal insulation most?`,
+  (place) => `Are insulation jackets cost-effective in ${place}?`,
+  (place) => `How much energy savings can insulation provide in ${place}?`,
+];
+
+const answerTemplates = [
+  (place) =>
+    `In ${place}, insulation jackets reduce energy loss and improve system safety in industrial operations.`,
+
+  (place) =>
+    `Industries in ${place} use insulation systems to lower operational costs and increase thermal efficiency.`,
+
+  (place) =>
+    `Thermal insulation in ${place} helps improve equipment lifespan and reduce maintenance downtime.`,
+
+  (place) =>
+    `Most industrial facilities in ${place} rely on insulation to maintain stable operating temperatures.`,
+];
+
+function pick(seed, arr) {
+  return arr[Math.abs(seed) % arr.length];
+}
+
 export function buildFAQ(country, city = null) {
-  const place = city ? city.display : country.name;
+  const place = city?.display || country?.name || "industrial facilities";
 
-  return [
-    {
-      question: `What is industrial insulation used for in ${place}?`,
-      answer: `Industrial insulation in ${place} is used to reduce heat loss, improve energy efficiency, and protect workers from high-temperature equipment.`,
-    },
-    {
-      question: `Do you provide insulation jackets in ${place}?`,
-      answer: `Yes, we provide custom removable insulation jackets for valves, turbines, pumps, and generators in ${place}.`,
-    },
-    {
-      question: `Which industries need insulation in ${place}?`,
-      answer: `Power plants, oil & gas, chemical processing, manufacturing, and marine industries in ${place} require thermal insulation solutions.`,
-    },
-  ];
-}
+  const seed = country.slug.length + (city?.name?.length || 0);
 
-/* =====================================================
-   🔥 KEYWORD DENSITY CONTROLLER (SEO SAFE)
-===================================================== */
-export function optimizeKeywordDensity(content, keyword) {
-  if (!content || !keyword) return content;
+  const faqs = [];
 
-  const words = content.split(" ");
-  let count = 0;
+  for (let i = 0; i < 4; i++) {
+    faqs.push({
+      question: pick(seed + i, faqTemplates)(place),
+      answer: pick(seed + i * 2, answerTemplates)(place),
+    });
+  }
 
-  return words
-    .map((word) => {
-      if (word.toLowerCase().includes(keyword.toLowerCase())) {
-        count++;
-        if (count > 5) return word.replace(keyword, ""); // prevent spam
-      }
-      return word;
-    })
-    .join(" ");
-}
-
-/* =====================================================
-   🔥 SEO STRUCTURE ENFORCER
-===================================================== */
-export function enforceSEOStructure(html) {
-  if (!html) return html;
-
-  return html
-    .replace(/<h1>/g, '<h1 class="seo-h1">')
-    .replace(/<h2>/g, '<h2 class="seo-h2">')
-    .replace(/<p>/g, '<p class="seo-p">');
-}
-
-/* =====================================================
-   🔥 PAGE AUTHORITY SCORE (FOR FUTURE SITEMAP BOOST)
-===================================================== */
-export function calculatePageScore({ hasFAQ, hasInternalLinks, hasSchema }) {
-  let score = 0;
-
-  if (hasFAQ) score += 30;
-  if (hasInternalLinks) score += 30;
-  if (hasSchema) score += 40;
-
-  return score; // used later in sitemap priority boost
+  return faqs;
 }

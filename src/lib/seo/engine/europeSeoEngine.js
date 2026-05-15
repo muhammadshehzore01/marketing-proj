@@ -1,12 +1,20 @@
-/* =====================================================
-🔥 SEO ENGINE (IMPROVED + NON-REPETITIVE + PRODUCTION FIX)
+/*/home/shahrukh-eng/marketing-proj/src/lib/seo/engine/europeSeoEngine.js
+ =====================================================
+🔥 SEO ENGINE (PRODUCTION STABLE FIX)
 ===================================================== */
 
 import { ACTIVE_LOCATIONS } from "@/lib/data/locations";
 
+import {
+  getRotatedKeyword,
+  buildCountryRelatedKeywords,
+  buildCityRelatedKeywords,
+} from "@/lib/data/shared/keywordPool";
+
 /* ================= CORE ================= */
 import { getSeoSeed } from "./shared/seedEngine";
 import { buildFAQ } from "./rankingBoost";
+import { generateBenefits } from "./shared/benefitsEngine";
 
 import {
   generateCountryIntro,
@@ -21,7 +29,6 @@ import {
 
 import { generateCountryTitle } from "./country/countryTitleEngine";
 import { generateCountryGrowthSection } from "./country/countryGrowthEngine";
-
 import { generateCityTitle } from "./city/cityTitleEngine";
 
 import {
@@ -29,42 +36,26 @@ import {
   generateCityHero,
 } from "./shared/heroEngine";
 
-import { getServiceGeoContent } from "./shared/serviceGeoEngine";
+import { buildGeoServiceSeo } from "./shared/serviceGeoEngine";
 
-/* ================= CLEAN ================= */
+/* =====================================================
+   CLEAN TEXT
+===================================================== */
 function cleanText(text) {
   if (!text) return "";
   return text.replace(/<[^>]*>/g, "").trim();
 }
 
-/* ================= CONTEXTUAL DATA ================= */
+/* =====================================================
+   DATA POOLS
+===================================================== */
 
 const industryMap = {
-  germany: [
-    "automotive engineering",
-    "industrial machinery",
-    "precision manufacturing",
-  ],
-  usa: [
-    "automation systems",
-    "energy infrastructure",
-    "advanced manufacturing",
-  ],
-  uae: [
-    "oil refining",
-    "petrochemical processing",
-    "industrial energy systems",
-  ],
-  france: [
-    "aerospace manufacturing",
-    "chemical processing",
-    "industrial design",
-  ],
-  default: [
-    "manufacturing",
-    "industrial processing",
-    "energy systems",
-  ],
+  germany: ["automotive engineering", "industrial machinery", "precision manufacturing"],
+  usa: ["automation systems", "energy infrastructure", "advanced manufacturing"],
+  uae: ["oil refining", "petrochemical processing", "industrial energy systems"],
+  france: ["aerospace manufacturing", "chemical processing", "industrial design"],
+  default: ["manufacturing", "industrial processing", "energy systems"],
 };
 
 const benefitPool = [
@@ -72,6 +63,9 @@ const benefitPool = [
   "reduce energy waste",
   "increase industrial safety",
   "optimize production performance",
+  "extend equipment lifespan",
+  "enhance thermal insulation stability",
+  "reduce downtime in maintenance cycles",
 ];
 
 const equipmentPool = [
@@ -80,69 +74,106 @@ const equipmentPool = [
   "turbines",
   "boilers",
   "heat exchangers",
+  "compressors",
+  "industrial pipelines",
+  "heat reactors",
 ];
 
-/* ================= HELPERS ================= */
-
+/* =====================================================
+   PICKER (ANTI DUPLICATION)
+===================================================== */
 function pick(arr, seed, offset = 0) {
-  return arr[(seed + offset) % arr.length];
-}
+  const s =
+    typeof seed === "number"
+      ? seed
+      : seed.toString().split("").reduce((a, b) => a + b.charCodeAt(0), 0);
 
-function getIndustry(country, seed) {
-  const list =
-    industryMap[country.slug?.toLowerCase()] || industryMap.default;
-
-  return list[seed % list.length];
+  return arr[Math.abs(s + offset) % arr.length];
 }
 
 /* =====================================================
-🔥 ENGINE
+   INDUSTRY
+===================================================== */
+function getIndustry(country, seed) {
+  const key = country.slug?.toLowerCase();
+  const list = industryMap[key] || industryMap.default;
+  return list[Math.abs(seed) % list.length];
+}
+
+/* =====================================================
+   OVERVIEW TEXT
+===================================================== */
+function buildOverviewText(entity, countryName, industry, equipment, benefit, seed) {
+  const variants = [
+    `${entity} is developing strong industrial infrastructure focused on ${industry}.`,
+    `Industrial systems in ${entity} rely heavily on ${equipment} to ${benefit}.`,
+    `${entity} plays a critical role in ${countryName}'s industrial ecosystem.`,
+    `Manufacturing and energy operations in ${entity} are optimized using modern thermal systems.`,
+    `Industrial facilities across ${entity} require advanced insulation for safety and efficiency.`,
+  ];
+
+  return variants[Math.abs(seed) % variants.length];
+}
+
+/* =====================================================
+   TITLE HELPERS
+===================================================== */
+
+function getCountryOverviewTitle(country, industry, seed) {
+  const titles = [
+    `Industrial Overview of ${country.name}`,
+    `${country.name} Industrial Infrastructure Report`,
+    `${industry} Sector in ${country.name}`,
+    `${country.name} Energy & Thermal Engineering Overview`,
+  ];
+
+  return titles[Math.abs(seed) % titles.length];
+}
+
+function getCityOverviewTitle(city, country, industry, seed) {
+  const titles = [
+    `${city.display} Industrial Overview`,
+    `${industry} Industry in ${city.display}, ${country.name}`,
+    `${city.display} Energy Systems & Thermal Engineering`,
+    `Industrial Performance in ${city.display}`,
+  ];
+
+  return titles[Math.abs(seed) % titles.length];
+}
+
+/* =====================================================
+   ENGINE
 ===================================================== */
 
 export const europeSeoEngine = {
+
   /* ================= COUNTRY ================= */
   generateCountry(country) {
     if (!country) return null;
 
     const { seed, keyword } = getSeoSeed(
-      `${country.slug}-v2-${country.name.length}`,
-      "country"
+      `${country.slug}-country-${country.cities?.length || 0}`
     );
 
-    let growth = null;
+    const industry = getIndustry(country, seed);
+    const equipment = pick(equipmentPool, seed, 2);
+    const benefit = pick(benefitPool, seed, 3);
 
-    try {
-      growth = generateCountryGrowthSection(country, seed);
-    } catch {
-      growth = {
-        title: `Industrial Growth in ${country.name}`,
-        subtitle: "",
-        content: [
-          `${country.name} has a strong and expanding industrial base.`,
-        ],
-      };
-    }
+    const growth = generateCountryGrowthSection(country, keyword);
 
     const faq = (buildFAQ(country) || []).map((f) => ({
       question: cleanText(f?.question),
       answer: cleanText(f?.answer),
     }));
 
-    const industry = getIndustry(country, seed);
-    const equipment = pick(equipmentPool, seed, 2);
-    const benefit = pick(benefitPool, seed, 3);
-
-    const contentTone = seed % 3;
-
-    let introVariation = "";
-
-    if (contentTone === 0) {
-      introVariation = `${country.name} is a key hub for ${industry}, where modern insulation systems enhance efficiency.`;
-    } else if (contentTone === 1) {
-      introVariation = `Industrial sectors in ${country.name} rely heavily on ${equipment} systems to ${benefit}.`;
-    } else {
-      introVariation = `In ${country.name}, advanced engineering solutions support ${industry} operations at scale.`;
-    }
+    const overviewText = buildOverviewText(
+      country.name,
+      country.name,
+      industry,
+      equipment,
+      benefit,
+      seed
+    );
 
     return {
       type: "country",
@@ -150,22 +181,26 @@ export const europeSeoEngine = {
       hero: generateCountryHero(country),
       intro: generateCountryIntro(country),
 
-      // FIXED
       title: generateCountryTitle(keyword, country, seed),
 
+      relatedKeywords: buildCountryRelatedKeywords(country),
+
       overview: {
-        content: [introVariation],
+        title: getCountryOverviewTitle(country, industry, seed),
+        content: [overviewText],
       },
 
-      serviceGeo: getServiceGeoContent(null, country),
+      benefits: generateBenefits(country, keyword, "country"),
+
+      /* ✅ FIXED: NO BROKEN IMPORT */
+      serviceGeo: buildGeoServiceSeo(null, country, "country"),
 
       growth,
-
       industries: country.industries || [],
       cities: country.cities || [],
 
-      compliance: `${country.name} follows industrial regulations.`,
-      export: `We supply systems to ${country.name}.`,
+      compliance: `${country.name} follows industrial safety and energy regulations.`,
+      export: `We supply removable insulation systems to ${country.name}.`,
 
       faq,
     };
@@ -183,30 +218,26 @@ export const europeSeoEngine = {
       };
 
     const { seed, keyword } = getSeoSeed(
-      `${citySlug}-${country.slug}-v2`,
-      "city"
+      `${country.slug}-${citySlug}-city-${country.cities?.length || 0}`
     );
+
+    const industry = getIndustry(country, seed);
+    const equipment = pick(equipmentPool, seed, 2);
+    const benefit = pick(benefitPool, seed, 3);
 
     const faq = (buildFAQ(country, city) || []).map((f) => ({
       question: cleanText(f?.question),
       answer: cleanText(f?.answer),
     }));
 
-    const industry = getIndustry(country, seed);
-    const equipment = pick(equipmentPool, seed, 2);
-    const benefit = pick(benefitPool, seed, 3);
-
-    const tone = seed % 3;
-
-    let overviewText = "";
-
-    if (tone === 0) {
-      overviewText = `${city.display} is a growing industrial zone in ${country.name}, focused on ${industry}.`;
-    } else if (tone === 1) {
-      overviewText = `Industrial systems in ${city.display} rely on ${equipment} to ${benefit}.`;
-    } else {
-      overviewText = `${city.display} plays a key role in ${country.name}'s ${industry} ecosystem.`;
-    }
+    const overviewText = buildOverviewText(
+      city.display,
+      country.name,
+      industry,
+      equipment,
+      benefit,
+      seed
+    );
 
     return {
       type: "city",
@@ -214,15 +245,19 @@ export const europeSeoEngine = {
       hero: generateCityHero(city, country),
       intro: generateCityIntro(city, country),
 
-      // FIXED
       title: generateCityTitle(keyword, city, country),
 
+      relatedKeywords: buildCityRelatedKeywords(city, country),
+
       overview: {
-        title: `Industrial Ecosystem of ${city.display}`,
-        content: overviewText,
+        title: getCityOverviewTitle(city, country, industry, seed),
+        content: [overviewText],
       },
 
-      serviceGeo: getServiceGeoContent(city, country),
+      benefits: generateBenefits(city, keyword, "city"),
+
+      /* ✅ UNIQUE CITY GEO SEO */
+      serviceGeo: buildGeoServiceSeo(city, country, "city"),
 
       faq,
     };
@@ -241,10 +276,7 @@ export const europeSeoEngine = {
     return {
       title: buildMetaTitle(city, country) || city?.display,
       description: buildMetaDescription(city, country) || "",
-      priority: getIndexPriority({
-        type: "city",
-        depth: 2,
-      }),
+      priority: getIndexPriority({ type: "city", depth: 2 }),
     };
   },
 };
